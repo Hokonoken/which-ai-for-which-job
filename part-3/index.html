@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="author" content="Hokonoken">
+<meta name="description" content="Part 3 of Which AI for which job: generating and assisting. Generative AI, integrated copilots and small specialised models: the person reads, the risk is the content, and what replaces the test set.">
+<title>Generating and Assisting</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#131A24; --muted:#5A6675; --line:#D5DBE3; --band:#E9EDF3;
+  --rh:#B42318; --nv:#3F7D0B; --ms:#175CD3; --oss:#5A6675; --hot:#C2410C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+    --rh:#F97066; --nv:#86CB3C; --ms:#84ADFF; --oss:#94A1B2; --hot:#FB923C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+  --rh:#F97066; --nv:#86CB3C; --ms:#84ADFF; --oss:#94A1B2; --hot:#FB923C;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.55;padding-inline:20px;padding-block:32px 56px}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
+h1,h2,h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,4.6vw,44px);font-weight:700;line-height:1.06;letter-spacing:-.01em}
+h2{font-size:23px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:70ch;color:var(--muted);margin:0}
+header{display:flex;flex-direction:column;gap:12px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted);padding:12px 0;border-block:1px solid var(--line)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.sw{display:inline-block;width:22px;height:12px;border:2px solid var(--oss);background:var(--surface)}
+.sw.rh{border-color:var(--rh)} .sw.nv{border-color:var(--nv)} .sw.ms{border-color:var(--ms);border-style:dashed}
+figure{margin:0;display:flex;flex-direction:column;gap:12px}
+.svgbox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:10px}
+svg{display:block;min-width:1040px;width:100%;height:auto;color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif}
+svg .b rect{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .rh rect{stroke:var(--rh)} svg .nv rect{stroke:var(--nv)}
+svg .ms rect{stroke:var(--ms);stroke-dasharray:6 3}
+svg .t{font-size:13px;font-weight:600;fill:currentColor}
+svg .s{font-size:10.5px;fill:var(--muted)}
+svg .tag{font-size:9px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace}
+svg .trh{fill:var(--rh)} svg .tnv{fill:var(--nv)} svg .tms{fill:var(--ms)} svg .toss{fill:var(--oss)}
+svg .frame{fill:var(--band);stroke:var(--line);stroke-width:1}
+svg .pod{fill:none;stroke:var(--nv);stroke-width:1.6;stroke-dasharray:7 4}
+svg .agt{fill:none;stroke:var(--ms);stroke-width:1.4;stroke-dasharray:6 3}
+svg .cap{font-size:10.5px;letter-spacing:.07em;font-weight:600}
+svg .lbl{font-size:10.5px;fill:var(--muted)}
+svg .flow{fill:none;stroke:currentColor;stroke-width:1.3}
+svg .msflow{fill:none;stroke:var(--ms);stroke-width:1.4;stroke-dasharray:5 3}
+svg .tr{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:2 4}
+svg .mfill{fill:var(--ms)} svg .tfill{fill:var(--muted)}
+svg .bar rect{fill:var(--band);stroke:var(--line)}
+svg .mat{font-size:9px;font-style:italic;fill:var(--muted)}
+svg .svc{fill:none;stroke:var(--line);stroke-width:1.6;stroke-dasharray:3 3}
+svg .hotn rect{fill:var(--surface);stroke:var(--hot);stroke-width:2.4}
+figcaption a{color:var(--hot)}
+svg a{cursor:pointer}
+.tblbox{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:800px;font-size:13.5px}
+th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:10px;border-bottom:1px solid var(--line);background:var(--band)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600;white-space:nowrap}
+td code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px}
+svg .blue rect{fill:var(--surface);stroke:var(--ms);stroke-width:1.8}
+svg .green rect{fill:var(--surface);stroke:var(--nv);stroke-width:1.8}
+svg .tblue{fill:var(--ms)} svg .tgreen{fill:var(--nv)}
+svg .wflow{fill:none;stroke:var(--nv);stroke-width:2.2}
+svg .wflow2{fill:none;stroke:var(--ms);stroke-width:2.2}
+svg .shadow{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 3}
+svg .gate rect{fill:var(--band);stroke:var(--hot);stroke-width:1.6}
+svg .hott{fill:var(--hot)}
+.sw.hot{border-color:var(--hot);border-width:3px}
+svg .ghost rect{fill:var(--surface);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3}
+figcaption{max-width:78ch;color:var(--muted);font-size:14px}
+ol.steps{margin:0;padding-left:22px;max-width:78ch;display:flex;flex-direction:column;gap:8px}
+ol.steps li::marker{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));border:1px solid var(--line);background:var(--surface)}
+.col{padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.col h3{display:flex;align-items:center;gap:10px}
+.col ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.col code,.q code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere}
+.q{border-left:3px solid var(--rh);padding:6px 14px;max-width:78ch;display:flex;flex-direction:column;gap:6px}
+.q blockquote{margin:0;font-size:16px}
+.q span{font-size:13px;color:var(--muted)}
+footer{font-size:12.5px;color:var(--muted);max-width:88ch}
+section{display:flex;flex-direction:column;gap:14px}
+
+.post{max-width:76ch;margin:0 auto;display:flex;flex-direction:column;gap:22px;font-size:16.5px;line-height:1.6}
+.post h1{font-size:clamp(30px,5vw,46px)}
+.post h2{margin-top:10px}
+.post p{margin:0}
+.post ul,.post ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.meta{font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--hot)}
+.takeaways{border:1px solid var(--line);background:var(--surface);padding:18px 22px;display:flex;flex-direction:column;gap:10px}
+.takeaways h3{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.takeaways ol{font-size:15.5px}
+.quote{border-left:3px solid var(--rh);padding:8px 18px;display:flex;flex-direction:column;gap:8px}
+.quote blockquote{margin:0;font-size:18px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:500}
+.quote span{font-size:13.5px;color:var(--muted)}
+.cta{border:2px solid var(--hot);padding:18px 22px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.cta strong{color:var(--hot)}
+.series{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
+.series li{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:baseline}
+.series li span a{color:inherit;text-decoration:none}
+.series li span a:hover{text-decoration:underline}
+.series li span{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--hot);white-space:nowrap}
+.fig{display:flex;flex-direction:column;gap:10px}
+.fig .svgbox{padding:8px}
+.fig figcaption{font-size:13.5px}
+.wide{max-width:1600px;margin:0 auto;width:100%}
+.sources{font-size:13.5px;color:var(--muted)}
+.sources ol{gap:4px}
+.sources a{color:inherit}
+hr{border:0;border-top:1px solid var(--line);margin:8px 0}
+.notice{font-size:13.5px;color:var(--muted);border:1px dashed var(--line);padding:10px 14px}
+.sn{max-width:76ch;margin:0 auto 18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.sn a{color:var(--us);text-decoration:none}
+.sn a:hover,.sn a:focus-visible{text-decoration:underline;outline:none}
+body{margin:0}
+
+/* larger type */
+.post{font-size:18px;line-height:1.65}
+.takeaways ol{font-size:17px}
+.meta{font-size:14.5px}
+.kicker{font-size:13px}
+figcaption,.fig figcaption{font-size:15px}
+.fig figcaption,figure figcaption{max-width:110ch;width:100%;margin:0;padding-inline:0;text-align:left}
+table,table.repl{font-size:15px}
+th{font-size:12px}
+pre.cfg{font-size:13.5px;line-height:1.6}
+.cfgblock .src{font-size:12.5px}
+.cfgblock .note{font-size:15px}
+.cfgblock > strong{font-size:16px}
+.notice{font-size:15px}
+.sources{font-size:15px}
+.rules p,.cv p,.law p,.law ul{font-size:15.5px}
+.rules h3,.cv h3{font-size:17.5px}
+.law h3{font-size:17px}
+.law .when{font-size:12.5px}
+.series{font-size:16.5px}
+.sn{font-size:13px}
+
+/* desktop scale: reads like a 130 % browser zoom, phones untouched */
+@media (min-width:641px){body{zoom:1.3}}
+
+/* series 2: matrix figure */
+svg .hd{font-size:10.5px;letter-spacing:.07em;font-weight:600;fill:var(--muted)}
+svg .fam{font-size:13.5px;font-weight:600;fill:currentColor}
+svg .sub{font-size:10.5px;fill:var(--muted)}
+svg .cell{font-size:11.5px;fill:currentColor}
+svg .rowline{stroke:var(--line);stroke-width:1}
+svg .band{fill:var(--band)}
+svg .lvl{fill:var(--surface);stroke:var(--line);stroke-width:1}
+svg .lvl.on{stroke:none}
+svg .g1 .lvl.on{fill:var(--oss)} svg .g2 .lvl.on{fill:var(--nv)} svg .g3 .lvl.on{fill:var(--ms)} svg .g4 .lvl.on{fill:var(--hot)}
+svg .g1 .bar{fill:var(--oss)} svg .g2 .bar{fill:var(--nv)} svg .g3 .bar{fill:var(--ms)} svg .g4 .bar{fill:var(--hot)}
+svg .badge{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500}
+svg .bread rect{fill:var(--surface);stroke:var(--oss);stroke-width:1.2} svg .bread text{fill:var(--oss)}
+svg .bwrite rect{fill:var(--surface);stroke:var(--ms);stroke-width:1.2} svg .bwrite text{fill:var(--ms)}
+svg .bcommit rect{fill:var(--surface);stroke:var(--hot);stroke-width:1.8} svg .bcommit text{fill:var(--hot)}
+svg .ref{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;fill:var(--muted)}
+.sw.g1{border-color:var(--oss);background:var(--oss)} .sw.g2{border-color:var(--nv);background:var(--nv)} .sw.g3{border-color:var(--ms);background:var(--ms)} .sw.g4{border-color:var(--hot);background:var(--hot)}
+.legend{max-width:1600px;margin:0 auto;width:100%}
+table.jobs{table-layout:fixed;min-width:960px}
+.wide + .post,.fig + .post{margin-top:26px}
+.post + .wide{margin-top:14px}
+table.jobs td:first-child{white-space:normal;font-weight:400}
+table.jobs td,table.jobs th{white-space:normal}
+.lvls{border:1px solid var(--line);background:var(--surface);padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 18px;font-size:15px}
+.lvls div{display:flex;flex-direction:column;gap:2px}
+.lvls b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;color:var(--hot)}
+
+/* part 2 figure */
+svg .g1 rect.box{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .hotbox rect.box{fill:var(--surface);stroke:var(--hot);stroke-width:2.2}
+svg .bluebox rect.box{fill:var(--surface);stroke:var(--ms);stroke-width:1.6}
+svg .greybox rect.box{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .art{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;fill:var(--hot)}
+svg .note{font-size:11.5px;fill:var(--muted)}
+svg .lv{font-size:9.5px;letter-spacing:.08em;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;fill:currentColor}
+
+/* part 3 figure */
+svg .greenbox rect.box{fill:var(--surface);stroke:var(--nv);stroke-width:1.6}
+svg .colhd{font-size:13.5px;font-weight:600;fill:currentColor}
+svg .yield{font-size:11px;font-weight:600;fill:var(--hot)}
+svg .tnv{fill:var(--nv)}
+</style>
+</head>
+<body>
+<nav class="sn"><a href="../part-2/">&larr; Part 2</a><a href="../">The series</a><span>Part 4 · coming</span></nav>
+<div class="post">
+  <span class="kicker">Which AI for which job · part 3 of 6</span>
+  <h1>Generating and assisting: the person reads, the risk is the content</h1>
+  <p class="lede">Two rows of the map put a language model in front of a person who reads before anything leaves: generative AI, and the copilot built into the tool you already use. A third family, the small specialised model, sits between them and part 2. Part 2 ended on a question this row answers badly: when the output is a sentence rather than a number, what is the test? Three answers, one of which is a test set, and the articles of law that reach this row through the model's provider and through disclosure rather than through the high-risk list.</p>
+  <div class="meta"><span>Hokonoken</span><span>September 2026</span><span>Reading time: 17 min</span><span>Not legal advice · Views are my own, not my employer's</span></div>
+
+  <div class="takeaways">
+    <h3>Three things to take away</h3>
+    <ol>
+      <li><strong>Three families, one control: the person who reads.</strong> Generative writes; the copilot proposes inside the host tool; the small specialised model turns a content task back into a label. In all three the worst action is not the model's, it is the person's acceptance, and the clause written for that is Article 14(4)(b), automation bias.</li>
+      <li><strong>"What is the test?" has three answers, and only one is a test set.</strong> For a label, part 2's discipline returns intact. For free text, the test is a reference set, a judge that is never the model under test, a human sample and adversarial probes, and none of it yields the accuracy figure Article 15(3) wants declared. For a proposal, the test is behavioural: how often it is accepted unchanged.</li>
+      <li><strong>The law reaches this row through the provider and through disclosure.</strong> Article 53, since 2 August 2025, binds whoever trained the model. Article 50, since 2 August 2026, binds whoever puts it in front of people. Article 4, since 2 February 2025, binds you for the staff who use the copilot. High-risk only if the job is on Annex III, which a copilot can be without anyone noticing.</li>
+    </ol>
+  </div>
+
+  <h2>Three families, one control</h2>
+  <p><strong>Generative.</strong> A language model produces content from a prompt: a draft, a summary, a translation, a function. The output is free text and a person reads it. By itself the system is at level 2 on the scale from part 1: it proposes. It becomes a commit the moment the text leaves without that person, published, sent, merged. The risk is what the text says, and the model's provider, not you, decided what it learned.</p>
+  <p><strong>Integrated copilot.</strong> The same model inside the tool you already use: the CRM, the case file, the IDE, the mailbox. It reads what the user can read and proposes; the user accepts or edits. This is the most sold form of AI in 2026 and the most often confused with an agent, so the test from part 1 matters: who acts? A copilot that can only propose is level 2. The moment the same product executes on the user's behalf inside the tool, sends the mail, files the ticket, it has moved to the action rows, and the vendor rarely changes the name. Part 5 takes it from there. Two things make the copilot different from plain generation. It sees your data, so the prompt is no longer only what the user typed: the document, the email, the ticket it reads can carry instructions, and the model has no way to tell a document from a command. And it proposes inside a flow designed for speed, which is exactly where a proposal gets accepted by habit.</p>
+  <p><strong>Small specialised model.</strong> A model fine-tuned for one task: classify the ticket, extract the six fields, route the mail, flag the clause. It is a size choice, not a regime, and the reason it gets a place here is what it does to the test: it turns a content task into a label with a target column, and everything from part 2 returns. Under the AI Act it is not a general-purpose AI model either; Article 3(63) reserves that term for a model that "displays significant generality and is capable of competently performing a wide range of distinct tasks". A model that does one thing is the row above with a language model inside, and it is often the right tool where a general model is used by reflex.</p>
+  <p>What the three share is where the control is. In part 2 the wiring set the level and the person could be absent. Here the person is the wiring: the output is text, and text does nothing until someone reads it and acts. That is the strength of this row and its trap. The strength: no tool call, no perimeter, a human at every exit. The trap: a human who reads forty proposals an hour is not reading. Article 14(4)(b), for high-risk systems, asks that the overseer "remain aware of the possible tendency of automatically relying or over-relying on the output". Nothing in the stack measures that. The last band of the figure is how you would.</p>
+
+  <h2>What is the test?</h2>
+  <p>Part 2 had a test set, metrics fixed before training and a threshold. This row has three answers, in decreasing order of comfort.</p>
+  <p><strong>For a label, the test set.</strong> A fine-tuned classifier has a target column. Hold out a test set, fix precision and recall per class before the run, choose the threshold with the people who own the queue, register the version, watch for drift, promote through the same gate. Article 15(3), "the levels of accuracy and the relevant accuracy metrics … declared in the accompanying instructions of use", is satisfiable as written. This is why the small model gets its own family: where a job can be reduced to a label, reduce it, and the test comes back.</p>
+  <p><strong>For free text, a reference set, a judge, a sample and a probe.</strong> There is no target column for "a good summary". What exists is a reference set of your own documents with what "good" means written down as a rubric; a judge that scores outputs against the rubric, often another model, and never the model under test; a sample re-read by people, with the sample's error rate kept as a number; and adversarial probes before promotion. The open tooling is real and dated: EleutherAI's lm-evaluation-harness, MIT, v0.4.13 of 31 August 2026, for benchmark-style evaluation; the UK AI Security Institute's Inspect, MIT, for task-shaped evaluations with scorers and a log per sample; NVIDIA's garak, Apache-2.0, v0.17.0 of 9 September 2026, for the probes; NeMo Guardrails, Apache-2.0, v0.24.1 of 16 September 2026, to run the same checks at request time. Part 6 of the first series put garak and a replayed reference set into the rollout gate as an Argo Rollouts analysis; nothing changes here. What none of it yields is an accuracy. The honest declaration for a generative system is a pass rate on a named reference set, a rubric, a judge version and a date. Say so in the instructions of use, and say what the sample of humans found.</p>
+  <p><strong>For a proposal, behaviour.</strong> A copilot's output is judged by what the person does with it, so the test is behavioural and it runs in production. Rate accepted unchanged, by user and by task. Edit distance between what was proposed and what was sent. A sample of the accepted-unchanged proposals re-read by someone other than the person who accepted them. The counter-intuitive part: a rising unchanged rate is the signal to look at, not the success metric. It is either the model getting better or the people reading less, and only the re-read sample tells you which. That sample is the evidence Article 14(4)(b) asks for, in the only form the stack can produce it.</p>
+</div>
+
+<figure class="fig wide">
+  <div class="svgbox">
+<svg viewBox="0 0 1280 610" role="img" aria-label="Two bands. Top: the content path, one request from a person in a host application through the model gateway, input guardrails, the model, output guardrails, back to a person who reads, and then a commit: publish, accept or send. The person is the control; the records are OpenTelemetry GenAI spans whose message content is opt-in. Bottom: three answers to the question what is the test: for a label, a test set with metrics fixed in advance; for free text, a reference set, a judge that is never the model under test, a human sample and adversarial probes, yielding a pass rate and a date rather than an accuracy; for a proposal, the rate accepted unchanged, the edit distance and a re-read sample, which is the evidence for the automation-bias clause.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker></defs>
+<rect class="frame" x="20" y="20" width="1240" height="220"/>
+<text class="cap" x="32" y="42" fill="currentColor">THE CONTENT PATH · THE PERSON IS THE CONTROL</text>
+<g class="greybox"><rect class="box" x="30" y="62" width="163" height="84"/><text class="t" x="40" y="86">A person, host app</text><text class="s" x="40" y="104">types, or reads the screen</text>
+<text class="ref" x="40" y="134">S1 · PART 1</text>
+</g>
+<path class="flow" marker-end="url(#a)" d="M193 104 L205 104"/>
+<g class="greybox"><rect class="box" x="205" y="62" width="163" height="84"/><text class="t" x="215" y="86">Model gateway</text><text class="s" x="215" y="104">identity, quotas, routing</text>
+<text class="ref" x="215" y="134">S1 · PART 1, 2</text>
+</g>
+<path class="flow" marker-end="url(#a)" d="M368 104 L380 104"/>
+<g class="greenbox"><rect class="box" x="380" y="62" width="163" height="84"/><text class="t" x="390" y="86">Guardrails, in</text><text class="s" x="390" y="104">topic, injection, PII</text>
+<text class="ref" x="390" y="134">S1 · PART 1</text>
+</g>
+<path class="flow" marker-end="url(#a)" d="M543 104 L555 104"/>
+<g class="greenbox"><rect class="box" x="555" y="62" width="163" height="84"/><text class="t" x="565" y="86">The model</text><text class="s" x="565" y="104">vLLM · llm-d · or an SLM</text>
+<text class="ref" x="565" y="134">S1 · PART 1, 6</text>
+</g>
+<path class="flow" marker-end="url(#a)" d="M718 104 L730 104"/>
+<g class="greenbox"><rect class="box" x="730" y="62" width="163" height="84"/><text class="t" x="740" y="86">Guardrails, out</text><text class="s" x="740" y="104">facts, tone, leakage</text>
+<text class="ref" x="740" y="134">S1 · PART 1</text>
+</g>
+<path class="flow" marker-end="url(#a)" d="M893 104 L905 104"/>
+<g class="hotbox"><rect class="box" x="905" y="62" width="163" height="84"/><text class="t" x="915" y="86">A person reads</text><text class="s" x="915" y="104">edits, accepts, rejects</text>
+<text class="lv" x="915" y="134">LEVEL 2</text>
+</g>
+<path class="flow" marker-end="url(#a)" d="M1068 104 L1080 104"/>
+<g class="hotbox"><rect class="box" x="1080" y="62" width="163" height="84"/><text class="t" x="1090" y="86">Commit</text><text class="s" x="1090" y="104">publish · accept · send</text>
+<text class="lv" x="1090" y="134">COMMIT</text>
+</g>
+<rect class="agt" x="30" y="156" width="1038" height="40"/>
+<text class="lbl" x="549.0" y="172" text-anchor="middle">records: one OpenTelemetry GenAI span per model call · status "Development" · gen_ai.input.messages and gen_ai.output.messages are Opt-In</text>
+<text class="lbl" x="549.0" y="188" text-anchor="middle">switch them on and the log holds the letter: retention and access become a data-protection decision, not a tracing setting · S1 · PART 5</text>
+<text class="lbl" x="30" y="220">A copilot is this path with the host application as the first box: the model reads what the user can read, including the document that tells it what to do.</text>
+<text class="lbl" x="30" y="234"></text>
+<rect class="frame" x="20" y="256" width="1240" height="334"/>
+<text class="cap" x="32" y="278" fill="currentColor">THREE ANSWERS TO "WHAT IS THE TEST?"</text>
+<g class="greybox"><rect class="box" x="40" y="296" width="392" height="272"/><text class="colhd" x="54" y="322">A label</text><text class="s" x="54" y="340">small specialised model · classify, extract, route</text>
+<text class="note" x="54" y="372">A test set held out from training.</text>
+<text class="note" x="54" y="394">Metrics fixed before the run: precision, recall per class.</text>
+<text class="note" x="54" y="416">A threshold chosen with the people who own the queue.</text>
+<text class="note" x="54" y="438">Part 2&#x27;s lifecycle, unchanged: registry, drift, rollout gate.</text>
+<line class="rowline" x1="54" y1="480" x2="418" y2="480"/>
+<text class="yield" x="54" y="504">yields: an accuracy you can declare (Art. 15(3))</text>
+<text class="ref" x="54" y="548">BACK TO PART 2</text></g>
+<g class="greenbox"><rect class="box" x="448" y="296" width="392" height="272"/><text class="colhd" x="462" y="322">Free text</text><text class="s" x="462" y="340">generative · write, summarise, translate, code</text>
+<text class="note" x="462" y="372">A reference set of your own documents; &quot;good&quot; written</text>
+<text class="note" x="462" y="394">as a rubric. A judge that is never the model under test.</text>
+<text class="note" x="462" y="416">A sample re-read by people, with its error rate kept.</text>
+<text class="note" x="462" y="438">garak probes before promotion; guardrails at run time.</text>
+<line class="rowline" x1="462" y1="480" x2="826" y2="480"/>
+<text class="yield" x="462" y="504">yields: a pass rate and a date, not an accuracy</text>
+<text class="ref" x="462" y="548">S1 · PART 1, 6</text></g>
+<g class="greenbox"><rect class="box" x="856" y="296" width="392" height="272"/><text class="colhd" x="870" y="322">A proposal</text><text class="s" x="870" y="340">integrated copilot · the person accepts or edits</text>
+<text class="note" x="870" y="372">Rate accepted unchanged, by user and by task.</text>
+<text class="note" x="870" y="394">Edit distance between proposal and what was sent.</text>
+<text class="note" x="870" y="416">A sample of unchanged proposals re-read by someone else.</text>
+<text class="note" x="870" y="438">A rising unchanged rate is the signal, not the success.</text>
+<line class="rowline" x1="870" y1="480" x2="1234" y2="480"/>
+<text class="yield" x="870" y="504">yields: the evidence for Art. 14(4)(b), automation bias</text>
+<text class="ref" x="870" y="548">THE HOST APP + S1 · PART 5</text></g>
+</svg>
+  </div>
+  <div class="legend"><span><i class="sw g1"></i>no language model</span><span><i class="sw g2"></i>content, a person reads</span><span><i class="sw hot"></i>where the person is the control, and where it commits</span><span>Levels from part 1: 2 proposes</span></div>
+  <figcaption>Top: the content path, one request from a person to a commit, through the layers of the first series. Nothing here calls a tool; the two hot boxes are a person reading and the commit that follows. The records are OpenTelemetry GenAI spans, whose message content is opt-in, which makes what you log a data-protection decision. Bottom: the three answers to "what is the test", one per family, and what each one yields.</figcaption>
+</figure>
+
+<div class="post">
+  <h2>What the platform owes them</h2>
+  <p>Take the stack of the first series and keep the model side. The MCP gateway is not needed until something acts; the model gateway is, because it is where identity, token quotas and routing live, and where a copilot serving four hundred people is told what it may cost. Inference is vLLM, Apache-2.0, v0.30.0 of 22 September 2026, or llm-d, v0.9.0 of 17 August 2026, when there are several replicas and a router to keep warm; part 6 of the first series covered the rollout. Guardrails sit on both sides of the model: topic, injection and personal data on the way in; facts, tone and leakage on the way out. And the records.</p>
+  <ul>
+    <li><strong>Records, and the content question.</strong> The OpenTelemetry GenAI semantic conventions define one span per model call, with the operation, the model, the token counts and the finish reason. Their status is "Development", and the attributes that carry the messages themselves, the input and the output, are "Opt-In". Switching them on is the difference between a trace that says a call happened and a trace that contains the customer's letter. Part 5 of the first series had the four records and the six-month retention; this row adds a decision that row did not need: content in logs is personal data, its retention and access are a data-protection question under the GDPR and the FADP, and it is taken before the first span is emitted, not after the first access request.</li>
+    <li><strong>The evaluation harness inside the rollout gate.</strong> The reference set, the judge, the probes and the sample are not a project; they are the analysis that runs before a model version is promoted and again when a prompt template or a guardrail changes. A prompt template is a deployable. Version it, and let it trigger the gate.</li>
+    <li><strong>A disclosure surface.</strong> Article 50(1), in force since 2 August 2026: a system "intended to interact directly with natural persons" tells them so, "at the latest at the time of the first interaction". For a chat, that is a sentence on the screen. For a copilot drafting a letter the citizen receives, the question is whether the letter is a "direct" interaction, and that is one for counsel.</li>
+    <li><strong>For the copilot, the host application's permissions.</strong> The model reads what the user can read. It has no permissions of its own, and that is the right design; what it inherits is the user's, including the documents that carry instructions. The controls are the host's access model, the input guardrail, and the fact that the copilot cannot act. Part 4 is about the moment it is allowed to search on its own; part 5 about the moment it is allowed to act.</li>
+    <li><strong>For the small model, part 2's lifecycle, plus one question.</strong> Fine-tuning a general-purpose model does not, by itself, make you the provider of a general-purpose AI model: the Commission's guidelines of 18 July 2025 set the line at a modification whose training compute is a third or more of the original's. It can make you the provider of a high-risk system: Article 25(1)(c) says a deployer who modifies "the intended purpose of an AI system … in such a way that the AI system concerned becomes a high-risk AI system" is the provider of that system. A mail router retrained to score applications has crossed that line; the model is the same size.</li>
+  </ul>
+
+  <h2>Where the law reaches this row</h2>
+  <p><strong>Through the model's provider.</strong> Article 53, applicable since 2 August 2025, binds providers of general-purpose AI models to technical documentation "including its training and testing process", to information for downstream providers, to "a policy to comply with Union law on copyright", and to "a sufficiently detailed summary about the content used for training". Article 53(2) lifts the first two for models "released under a free and open-source licence" with public weights and architecture, except models with systemic risk. The Code of Practice of 10 July 2025 is the way most providers will show it, in three chapters, transparency, copyright, safety and security, the last one only for the few under Article 55. None of this binds you as a deployer. All of it is what you should ask to see before you put the model in front of people, because it is the only account you will get of what the thing learned.</p>
+  <p><strong>Through disclosure.</strong> Article 50(1) for the interaction. Article 50(2) for the provider marking synthetic content "in a machine-readable format". Article 50(4) for you: text "published to inform the public on matters of public interest" must be disclosed as AI-generated, unless "the AI-generated content has undergone a process of human review or editorial control and where a natural or legal person holds editorial responsibility". Read that clause with the map: the editorial review is not a nicety, it is the exemption, and the person holding responsibility is the control this row runs on. Article 50(5): the information comes "in a clear and distinguishable manner at the latest at the time of the first interaction or exposure".</p>
+  <p><strong>Through your staff.</strong> Article 4, applicable since 2 February 2025: providers and deployers "shall take measures to ensure, to their best extent, a sufficient level of AI literacy of their staff and other persons dealing with the operation and use of AI systems on their behalf". For a copilot rolled out to everyone, this is the only article that reaches the people accepting the proposals, and it is already in force.</p>
+  <p><strong>Through the high-risk list, by accident.</strong> Nothing in Annex III says "copilot". It says systems "to evaluate learning outcomes", "to analyse and filter job applications", "to allocate tasks based on individual behaviour", to draft what a public authority uses "to grant, reduce, revoke, or reclaim" a benefit. A copilot given one of those jobs is on the list at level 2, and Article 6(3) offers a way out only for a "narrow procedural task", a "preparatory task", or improving "the result of a previously completed human activity", never where the system profiles people. Whether a drafted decision letter is preparatory or is the decision is, again, for counsel; the map's job is to make sure someone asks.</p>
+  <p><strong>Through what was already there.</strong> The GDPR and the FADP for the personal data in every prompt and every log. NIS2 Article 21(2)(e), "security in network and information systems acquisition, development and maintenance", for the code assistant whose proposals end up in production. FINMA 08/2024 §2.2 for the inventory entry, whatever the risk class.</p>
+
+  <h2>Three organisations, nine jobs</h2>
+  <p>The same three organisations. Each job is placed by who reads and what the acceptance commits.</p>
+</div>
+
+<div class="wide"><div class="tblbox"><table class="jobs"><colgroup><col style="width:21%"><col style="width:10%"><col style="width:11%"><col style="width:27%"><col style="width:31%"></colgroup>
+    <thead><tr><th>Job</th><th>Family, level</th><th>Worst action</th><th>What the platform must provide</th><th>Regulatory line</th></tr></thead>
+    <tbody>
+      <tr><td>A public agency's caseworkers get a draft decision letter generated from the case file; they edit and sign.</td><td>Integrated copilot, 2</td><td>write; commit when signed</td><td>Model gateway with the caseworker's identity; input guardrail on the file's content; the proposal and the signed letter recorded together; the unchanged rate and a re-read sample.</td><td>Annex III 5(a) reaches systems used "to grant, reduce, revoke, or reclaim" benefits. Article 6(3)(d), "preparatory task", may apply; counsel decides. Article 14(4)(b) is the clause to design for. Article 4 for the caseworkers.</td></tr>
+      <tr><td>The same agency translates public information into other languages and publishes it.</td><td>Generative, 2</td><td>commit at publication</td><td>Reference set of already-translated official texts with a rubric; a judge and a bilingual sample; a named editor per publication; the model and template version recorded per page.</td><td>Article 50(4): text "published to inform the public on matters of public interest" is disclosed as AI-generated unless it "has undergone a process of human review or editorial control" under someone's "editorial responsibility". The editor is the exemption.</td></tr>
+      <tr><td>The same agency routes incoming mail to the right office with a fine-tuned classifier.</td><td>Small specialised model, 3</td><td>write: the queue</td><td>Part 2's lifecycle: test set, per-class precision and recall, threshold, registry, drift, rollout gate; a misroute path with its delay measured.</td><td>Not an Annex III row. Article 25(1)(c): if the same model is later used to decide, not to route, the agency becomes the provider of a high-risk system. GDPR and FADP for the mail's content.</td></tr>
+      <tr><td>A bank answers customers' general questions about products in a chat, with no access to accounts.</td><td>Generative, 2 in effect 4</td><td>read; a wrong answer is the risk</td><td>Output guardrail on facts against the product sheets; a reference set of real questions with approved answers; refusal path to a person; the conversation recorded under a retention decision.</td><td>Article 50(1): the customer is told they are talking to an AI, at the first interaction. FINMA 08/2024 §2.2 inventory entry. FADP Articles 7 and 8 for what the customer types.</td></tr>
+      <tr><td>The same bank gives advisers a copilot that summarises client meetings from the recording.</td><td>Integrated copilot, 2</td><td>write to the client file</td><td>The recording and the transcript under a purpose and a retention; the summary marked as generated in the file; the adviser's edits kept; content logging off unless decided.</td><td>GDPR and FADP: recording requires a basis and information; the summary is personal data with a purpose. Article 4 for the advisers. Not an Annex III row.</td></tr>
+      <tr><td>The same bank's developers use a code assistant in the IDE.</td><td>Integrated copilot, 2</td><td>write; commit at merge</td><td>Review is the gate: no proposal reaches main without a second reader and the tests; the accepted-unchanged rate per repository; the licence policy of the model's provider on file.</td><td>NIS2 Article 21(2)(e): "security in network and information systems … development and maintenance". Article 53(1)(c) binds the model's provider on copyright; the bank's own review binds the bank. Not an Annex III row.</td></tr>
+      <tr><td>A manufacturer drafts maintenance procedures from engineering notes.</td><td>Generative, 2</td><td>commit at release of the procedure</td><td>A qualified reviewer named per procedure; a reference set of approved procedures as the rubric; the model version and the reviewer recorded on the document.</td><td>Outside Annex III. Product-safety and machinery rules apply to the procedure itself; the reviewer's competence is the control, and it is Article 14(4)(a) in spirit if not in law.</td></tr>
+      <tr><td>The same manufacturer's automation engineers use a copilot for PLC and industrial code.</td><td>Integrated copilot, 2</td><td>write; commit at deployment to the line</td><td>A test bench between the proposal and the machine; the accepted-unchanged rate; the copilot has no path to the controller.</td><td>Machinery and functional-safety regimes govern the deployed code; the copilot is outside Annex III as long as it only proposes. Article 4 for the engineers.</td></tr>
+      <tr><td>The same manufacturer triages warranty claims with a small model that extracts the fields and flags the likely cause.</td><td>Small specialised model, 1</td><td>read; a wrong flag delays a claim</td><td>Test set per field and per cause; drift against the new product line; a person decides the claim; the flag recorded with the decision.</td><td>Outside Annex III: no natural person is evaluated, the product is. Consumer law on the claim's handling time; the extraction is the data stage of whatever decides.</td></tr>
+    </tbody>
+  </table></div></div>
+
+<div class="post">
+  <p>No row is high-risk on its face, and two are a change of purpose away from it: the letter-drafting copilot and the mail router. The regulatory column here is thinner than in part 2, and it is thin in a specific way: the articles that bite are the ones already in force, 4, 50 and 53, not the ones due in December 2027. This row is regulated now, lightly, and it is the row most organisations have already deployed.</p>
+
+  <h2>What this row teaches the next</h2>
+  <p>Everything above assumes the model knows two things: what was in its training run, and what the user typed or was looking at. That is why the control can be a single person reading: the model cannot reach past the screen. The next row removes that assumption. The moment the model is allowed to search your documents rather than wait for them, the risk moves from what it writes to what it was allowed to read, and to how old that is. The question that carries over: when the model can read, who decided what it may read, and when was that last true?</p>
+
+  <div class="cta">
+    <strong>Next in the series</strong>
+    <ol class="series">
+      <li><span><a href="../part-1/">Part 1</a></span>The map: who decides, who acts, and how far the system goes on its own.</li>
+      <li><span><a href="../part-2/">Part 2</a></span>AI without a language model: prediction, recommendation, perception, optimisation.</li>
+      <li><span>Part 4</span>Answering on your own documents: RAG, agentic RAG, graph RAG. The risk becomes access to sources, and freshness.</li>
+      <li><span>Part 5</span>Acting within a perimeter: the AI agent with its tools, and the augmented workflow as the migration path.</li>
+      <li><span>Part 6</span>Pursuing a goal with several agents: agentic AI, delegation, intent. The most demanding regime, and the one sold first.</li>
+    </ol>
+  </div>
+
+  <div class="notice">This article is an engineer's reading of public legal texts and public code, checked against the versions and dates given below. It is not legal advice. For a real deployment, read the texts with counsel and with your supervisor's guidance for your sector.</div>
+
+  <div class="notice"><strong>Read, not run.</strong> Everything in this series comes from reading public documents and public code at a stated date, not from running them in production. Treat it as a map to test, not a result to trust: the texts are amended, the projects move monthly, and a placement that is right for one organisation's wiring is wrong for another's. Place your own jobs on the map with the people who own them. When something here does not match what you find, tell me, or better, tell the project or the authority concerned: that is the only way a map like this one stays true.</div>
+
+  <hr>
+  <div class="sources">
+    <strong>Sources</strong>
+    <ol>
+      <li>Regulation (EU) 2024/1689 (AI Act), Article 3(23), (63) and (66), Article 4, Article 6(3), Article 14(4), Article 15(3), Article 25(1), Article 50, Article 53, Article 55, Annex III points 3, 4 and 5; texts read on <a href="https://artificialintelligenceact.eu/">artificialintelligenceact.eu</a> on 23 September 2026. Application dates as amended by Regulation (EU) 2026/1744, read in <a href="https://hokonoken.github.io/agent-stack-blueprint/part-3/">part 3 of the first series</a>.</li>
+      <li>European Commission, guidelines on the scope of obligations for providers of general-purpose AI models, 18 July 2025, as summarised on <a href="https://artificialintelligenceact.eu/gpai-guidelines-overview/">artificialintelligenceact.eu</a> (the one-third-of-training-compute criterion); <a href="https://digital-strategy.ec.europa.eu/en/policies/contents-code-gpai">General-Purpose AI Code of Practice</a>, 10 July 2025, three chapters. Read 23 September 2026.</li>
+      <li>Directive (EU) 2022/2555 (NIS2), Article 21(2)(e); Federal Act on Data Protection (FADP, SR 235.1), Articles 7 and 8; FINMA Guidance 08/2024, §2.2. As read for part 3 of the first series, 22 September 2026.</li>
+      <li><a href="https://github.com/open-telemetry/semantic-conventions-genai">OpenTelemetry semantic conventions for GenAI</a>, documents gen-ai-spans.md, gen-ai-agent-spans.md and gen-ai-events.md, status "Development", attributes gen_ai.input.messages and gen_ai.output.messages at requirement level "Opt-In"; read from the repository on 23 September 2026, alongside semantic-conventions v1.44.0 of 4 August 2026.</li>
+      <li><a href="https://github.com/EleutherAI/lm-evaluation-harness">lm-evaluation-harness</a>, MIT, v0.4.13, 31 August 2026. <a href="https://github.com/UKGovernmentBEIS/inspect_ai">Inspect</a>, MIT, UK AI Security Institute, repository read 23 September 2026. <a href="https://github.com/NVIDIA/garak">garak</a>, Apache-2.0, v0.17.0, 9 September 2026. <a href="https://github.com/NVIDIA-NeMo/Guardrails">NeMo Guardrails</a>, Apache-2.0, v0.24.1, 16 September 2026. <a href="https://github.com/vllm-project/vllm">vLLM</a>, Apache-2.0, v0.30.0, 22 September 2026. <a href="https://github.com/llm-d/llm-d">llm-d</a>, Apache-2.0, v0.9.0, 17 August 2026. Release tags and dates from each repository's GitHub releases page, 23 September 2026.</li>
+      <li><a href="https://hokonoken.github.io/agent-stack-blueprint/">Agent stack blueprint</a>, the first series, parts 1, 5 and 6, for the model gateway and guardrails, the records, and the rollout gate.</li>
+    </ol>
+    <p>Independent work, not affiliated with any regulator, standards body or vendor named. Not legal advice. Product names belong to their owners. Views are my own and do not represent the position of my employer. Text and diagrams: <a href="../LICENSE.md">CC BY 4.0</a>; quoted code and documents stay under their own licences.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
