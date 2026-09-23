@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="author" content="Hokonoken">
+<meta name="description" content="Part 4 of Which AI for which job: answering on your own documents. RAG, agentic RAG and graph RAG: the index is a copy of your data with an access list and a date, and the risk moves from what the model writes to what it was allowed to read.">
+<title>Answering on Your Documents</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#131A24; --muted:#5A6675; --line:#D5DBE3; --band:#E9EDF3;
+  --rh:#B42318; --nv:#3F7D0B; --ms:#175CD3; --oss:#5A6675; --hot:#C2410C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+    --rh:#F97066; --nv:#86CB3C; --ms:#84ADFF; --oss:#94A1B2; --hot:#FB923C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+  --rh:#F97066; --nv:#86CB3C; --ms:#84ADFF; --oss:#94A1B2; --hot:#FB923C;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.55;padding-inline:20px;padding-block:32px 56px}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
+h1,h2,h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,4.6vw,44px);font-weight:700;line-height:1.06;letter-spacing:-.01em}
+h2{font-size:23px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:70ch;color:var(--muted);margin:0}
+header{display:flex;flex-direction:column;gap:12px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted);padding:12px 0;border-block:1px solid var(--line)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.sw{display:inline-block;width:22px;height:12px;border:2px solid var(--oss);background:var(--surface)}
+.sw.rh{border-color:var(--rh)} .sw.nv{border-color:var(--nv)} .sw.ms{border-color:var(--ms);border-style:dashed}
+figure{margin:0;display:flex;flex-direction:column;gap:12px}
+.svgbox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:10px}
+svg{display:block;min-width:1040px;width:100%;height:auto;color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif}
+svg .b rect{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .rh rect{stroke:var(--rh)} svg .nv rect{stroke:var(--nv)}
+svg .ms rect{stroke:var(--ms);stroke-dasharray:6 3}
+svg .t{font-size:13px;font-weight:600;fill:currentColor}
+svg .s{font-size:10.5px;fill:var(--muted)}
+svg .tag{font-size:9px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace}
+svg .trh{fill:var(--rh)} svg .tnv{fill:var(--nv)} svg .tms{fill:var(--ms)} svg .toss{fill:var(--oss)}
+svg .frame{fill:var(--band);stroke:var(--line);stroke-width:1}
+svg .pod{fill:none;stroke:var(--nv);stroke-width:1.6;stroke-dasharray:7 4}
+svg .agt{fill:none;stroke:var(--ms);stroke-width:1.4;stroke-dasharray:6 3}
+svg .cap{font-size:10.5px;letter-spacing:.07em;font-weight:600}
+svg .lbl{font-size:10.5px;fill:var(--muted)}
+svg .flow{fill:none;stroke:currentColor;stroke-width:1.3}
+svg .msflow{fill:none;stroke:var(--ms);stroke-width:1.4;stroke-dasharray:5 3}
+svg .tr{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:2 4}
+svg .mfill{fill:var(--ms)} svg .tfill{fill:var(--muted)}
+svg .bar rect{fill:var(--band);stroke:var(--line)}
+svg .mat{font-size:9px;font-style:italic;fill:var(--muted)}
+svg .svc{fill:none;stroke:var(--line);stroke-width:1.6;stroke-dasharray:3 3}
+svg .hotn rect{fill:var(--surface);stroke:var(--hot);stroke-width:2.4}
+figcaption a{color:var(--hot)}
+svg a{cursor:pointer}
+.tblbox{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:800px;font-size:13.5px}
+th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:10px;border-bottom:1px solid var(--line);background:var(--band)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600;white-space:nowrap}
+td code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px}
+svg .blue rect{fill:var(--surface);stroke:var(--ms);stroke-width:1.8}
+svg .green rect{fill:var(--surface);stroke:var(--nv);stroke-width:1.8}
+svg .tblue{fill:var(--ms)} svg .tgreen{fill:var(--nv)}
+svg .wflow{fill:none;stroke:var(--nv);stroke-width:2.2}
+svg .wflow2{fill:none;stroke:var(--ms);stroke-width:2.2}
+svg .shadow{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 3}
+svg .gate rect{fill:var(--band);stroke:var(--hot);stroke-width:1.6}
+svg .hott{fill:var(--hot)}
+.sw.hot{border-color:var(--hot);border-width:3px}
+svg .ghost rect{fill:var(--surface);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3}
+figcaption{max-width:78ch;color:var(--muted);font-size:14px}
+ol.steps{margin:0;padding-left:22px;max-width:78ch;display:flex;flex-direction:column;gap:8px}
+ol.steps li::marker{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));border:1px solid var(--line);background:var(--surface)}
+.col{padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.col h3{display:flex;align-items:center;gap:10px}
+.col ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.col code,.q code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere}
+.q{border-left:3px solid var(--rh);padding:6px 14px;max-width:78ch;display:flex;flex-direction:column;gap:6px}
+.q blockquote{margin:0;font-size:16px}
+.q span{font-size:13px;color:var(--muted)}
+footer{font-size:12.5px;color:var(--muted);max-width:88ch}
+section{display:flex;flex-direction:column;gap:14px}
+
+.post{max-width:76ch;margin:0 auto;display:flex;flex-direction:column;gap:22px;font-size:16.5px;line-height:1.6}
+.post h1{font-size:clamp(30px,5vw,46px)}
+.post h2{margin-top:10px}
+.post p{margin:0}
+.post ul,.post ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.meta{font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--hot)}
+.takeaways{border:1px solid var(--line);background:var(--surface);padding:18px 22px;display:flex;flex-direction:column;gap:10px}
+.takeaways h3{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.takeaways ol{font-size:15.5px}
+.quote{border-left:3px solid var(--rh);padding:8px 18px;display:flex;flex-direction:column;gap:8px}
+.quote blockquote{margin:0;font-size:18px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:500}
+.quote span{font-size:13.5px;color:var(--muted)}
+.cta{border:2px solid var(--hot);padding:18px 22px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.cta strong{color:var(--hot)}
+.series{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
+.series li{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:baseline}
+.series li span a{color:inherit;text-decoration:none}
+.series li span a:hover{text-decoration:underline}
+.series li span{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--hot);white-space:nowrap}
+.fig{display:flex;flex-direction:column;gap:10px}
+.fig .svgbox{padding:8px}
+.fig figcaption{font-size:13.5px}
+.wide{max-width:1600px;margin:0 auto;width:100%}
+.sources{font-size:13.5px;color:var(--muted)}
+.sources ol{gap:4px}
+.sources a{color:inherit}
+hr{border:0;border-top:1px solid var(--line);margin:8px 0}
+.notice{font-size:13.5px;color:var(--muted);border:1px dashed var(--line);padding:10px 14px}
+.sn{max-width:76ch;margin:0 auto 18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.sn a{color:var(--us);text-decoration:none}
+.sn a:hover,.sn a:focus-visible{text-decoration:underline;outline:none}
+body{margin:0}
+
+/* larger type */
+.post{font-size:18px;line-height:1.65}
+.takeaways ol{font-size:17px}
+.meta{font-size:14.5px}
+.kicker{font-size:13px}
+figcaption,.fig figcaption{font-size:15px}
+.fig figcaption,figure figcaption{max-width:110ch;width:100%;margin:0;padding-inline:0;text-align:left}
+table,table.repl{font-size:15px}
+th{font-size:12px}
+pre.cfg{font-size:13.5px;line-height:1.6}
+.cfgblock .src{font-size:12.5px}
+.cfgblock .note{font-size:15px}
+.cfgblock > strong{font-size:16px}
+.notice{font-size:15px}
+.sources{font-size:15px}
+.rules p,.cv p,.law p,.law ul{font-size:15.5px}
+.rules h3,.cv h3{font-size:17.5px}
+.law h3{font-size:17px}
+.law .when{font-size:12.5px}
+.series{font-size:16.5px}
+.sn{font-size:13px}
+
+/* desktop scale: reads like a 130 % browser zoom, phones untouched */
+@media (min-width:641px){body{zoom:1.3}}
+
+/* series 2: matrix figure */
+svg .hd{font-size:10.5px;letter-spacing:.07em;font-weight:600;fill:var(--muted)}
+svg .fam{font-size:13.5px;font-weight:600;fill:currentColor}
+svg .sub{font-size:10.5px;fill:var(--muted)}
+svg .cell{font-size:11.5px;fill:currentColor}
+svg .rowline{stroke:var(--line);stroke-width:1}
+svg .band{fill:var(--band)}
+svg .lvl{fill:var(--surface);stroke:var(--line);stroke-width:1}
+svg .lvl.on{stroke:none}
+svg .g1 .lvl.on{fill:var(--oss)} svg .g2 .lvl.on{fill:var(--nv)} svg .g3 .lvl.on{fill:var(--ms)} svg .g4 .lvl.on{fill:var(--hot)}
+svg .g1 .bar{fill:var(--oss)} svg .g2 .bar{fill:var(--nv)} svg .g3 .bar{fill:var(--ms)} svg .g4 .bar{fill:var(--hot)}
+svg .badge{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500}
+svg .bread rect{fill:var(--surface);stroke:var(--oss);stroke-width:1.2} svg .bread text{fill:var(--oss)}
+svg .bwrite rect{fill:var(--surface);stroke:var(--ms);stroke-width:1.2} svg .bwrite text{fill:var(--ms)}
+svg .bcommit rect{fill:var(--surface);stroke:var(--hot);stroke-width:1.8} svg .bcommit text{fill:var(--hot)}
+svg .ref{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;fill:var(--muted)}
+.sw.g1{border-color:var(--oss);background:var(--oss)} .sw.g2{border-color:var(--nv);background:var(--nv)} .sw.g3{border-color:var(--ms);background:var(--ms)} .sw.g4{border-color:var(--hot);background:var(--hot)}
+.legend{max-width:1600px;margin:0 auto;width:100%}
+table.jobs{table-layout:fixed;min-width:960px}
+.wide + .post,.fig + .post{margin-top:26px}
+.post + .wide{margin-top:14px}
+table.jobs td:first-child{white-space:normal;font-weight:400}
+table.jobs td,table.jobs th{white-space:normal}
+.lvls{border:1px solid var(--line);background:var(--surface);padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 18px;font-size:15px}
+.lvls div{display:flex;flex-direction:column;gap:2px}
+.lvls b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;color:var(--hot)}
+
+/* part 2 figure */
+svg .g1 rect.box{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .hotbox rect.box{fill:var(--surface);stroke:var(--hot);stroke-width:2.2}
+svg .bluebox rect.box{fill:var(--surface);stroke:var(--ms);stroke-width:1.6}
+svg .greybox rect.box{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .art{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;fill:var(--hot)}
+svg .note{font-size:11.5px;fill:var(--muted)}
+svg .lv{font-size:9.5px;letter-spacing:.08em;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;fill:currentColor}
+
+/* part 3 figure */
+svg .greenbox rect.box{fill:var(--surface);stroke:var(--nv);stroke-width:1.6}
+svg .colhd{font-size:13.5px;font-weight:600;fill:currentColor}
+svg .yield{font-size:11px;font-weight:600;fill:var(--hot)}
+svg .tnv{fill:var(--nv)}
+</style>
+</head>
+<body>
+<nav class="sn"><a href="../part-3/">&larr; Part 3</a><a href="../">The series</a><span>Part 5 · coming</span></nav>
+<div class="post">
+  <span class="kicker">Which AI for which job · part 4 of 6</span>
+  <h1>Answering on your own documents: what the model may read, and how old it is</h1>
+  <p class="lede">Part 3 ended on a question: when the model can read, who decided what it may read, and when was that last true? This row is where a language model answers from your documents rather than from its training run. Three ways to do it, three different deciders, and one thing they share that the previous rows did not have: an index, which is a copy of your data with an access list and a date. The risk moves from what the model writes to what it was allowed to read.</p>
+  <div class="meta"><span>Hokonoken</span><span>September 2026</span><span>Reading time: 16 min</span><span>Not legal advice · Views are my own, not my employer's</span></div>
+
+  <div class="takeaways">
+    <h3>Three things to take away</h3>
+    <ol>
+      <li><strong>Retrieval puts your documents where the training run was.</strong> The model's memory becomes two things: the weights, which are the provider's, and the index, which is yours. Everything part 3 said about content still holds. What is new is that the answer draws on a copy of your data, and the copy has an access list and a date.</li>
+      <li><strong>Three RAGs, three deciders.</strong> Classic: the retriever decides, by similarity, in one pass. Agentic: the model decides what to search, where and how many times, so retrieval has become an action and part 5 begins here. Graph: the ingest decided, before any question was asked, which entities and relations exist; the risk moved to ingest time.</li>
+      <li><strong>The index is a copy, and the law treats copies as data.</strong> Accuracy and storage limitation under GDPR Article 5, erasure under Article 17: a deletion that does not reach the index is not a deletion. And access has to be checked at query time, as the user, or the model becomes the way around the permission system.</li>
+    </ol>
+  </div>
+
+  <h2>What changed since part 3</h2>
+  <p>The 2020 paper that named the technique described a model that combines "pre-trained parametric and non-parametric memory": the weights on one side, "a dense vector index" reached through a retriever on the other. That second memory is the whole point of this row. It is yours. You fill it, you can empty it, you can say what is in it and when it was put there. Nothing about the weights gives you any of that.</p>
+  <p>Four consequences, and the rest of this part is about them. The model can be right about your data without anyone retraining it. It can be confidently wrong about last quarter's policy, in the present tense, with a citation, because the index is as old as its last ingest. It can answer a user's question from a document that user was never allowed to open, because the retriever looked at similarity and not at permissions. And, for the first time in this series, the answer can point at its source: the chunk, the page, the version. The citation is not a courtesy in this row; it is the control.</p>
+
+  <h2>Three RAGs, three deciders</h2>
+  <p><strong>Classic RAG.</strong> The question is embedded, the nearest chunks are fetched, the model writes an answer from them, a person reads it. The retriever decides what the model sees, by similarity, once. The person is still the control, as in part 3, and the system sits at level 2. What the person cannot see is what was not retrieved: a missing chunk produces a fluent answer with a gap in it, and the citation shows only what was used.</p>
+  <p><strong>Agentic RAG.</strong> The 2025 survey that named it describes "embedding autonomous AI agents into the RAG pipeline" so that they "dynamically manage retrieval strategies, iteratively refine contextual understanding, and adapt workflows", using "reflection, planning, tool use, and multi-agent collaboration". Read that with the map: the model now decides what to search, in which store, how many times, and when to stop. Retrieval has become an action chosen by the model, and every question from the action rows applies to it: through which gateway, under whose identity, with what record. The system is at level 3 even though nothing is written anywhere, and OWASP's 2025 list has an entry for the failure, "Excessive Agency". Part 5 starts exactly here; this part only asks what the retrieval action needs.</p>
+  <p><strong>Graph RAG.</strong> The 2024 paper from Microsoft Research starts from a limitation: conventional retrieval "fails on global questions directed at an entire text corpus, such as 'What are the main themes in the dataset?'". Its answer is to build "an entity knowledge graph from the source documents" at ingest and to "pregenerate community summaries for all groups of closely related entities", so that a global question is answered from the summaries rather than from nearest chunks. What that does to the map is subtle. The decision about what the model will draw on was taken before any question, by a model, at ingest time. An extracted relation is an assertion about your data, made by a model, on a date. When it is wrong, it is wrong for every question that touches it, and the person reading the answer has no chunk to check against, only a summary of a summary. The control moved to the ingest, and so must the review.</p>
+</div>
+
+<figure class="fig wide">
+  <div class="svgbox">
+<svg viewBox="0 0 1280 640" role="img" aria-label="Two bands. Top: ingest, the index is a copy. Sources with their access lists go through a parser, then either chunking and embedding into a vector index or entity and relation extraction into a graph; the copy carries the access list, an as-of date, and must receive erasures; poisoning happens here. Bottom: ask, who decides what to read. A question goes to one of three: classic RAG where the retriever decides by similarity in one pass at level 2; agentic RAG where the model decides what to search, where and how many times, so retrieval is an action through the tool gateway at level 3; graph RAG where the ingest decided, before any question, which entities and relations exist.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--hot)"/></marker></defs>
+<rect class="frame" x="20" y="20" width="1240" height="230"/>
+<text class="cap" x="32" y="42" fill="currentColor">INGEST · THE INDEX IS A COPY</text>
+<g class="greybox"><rect class="box" x="30" y="62" width="210" height="84"/><text class="t" x="40" y="86">Sources</text><text class="s" x="40" y="104">files, mail, tickets, with their ACLs</text><text class="ref" x="40" y="134">WHAT THE USER MAY SEE</text></g>
+<path class="flow" marker-end="url(#a)" d="M240 104 L262 104"/>
+<g class="greybox"><rect class="box" x="262" y="62" width="190" height="84"/><text class="t" x="272" y="86">Parse</text><text class="s" x="272" y="104">layout, OCR, versions (Docling)</text><text class="ref" x="272" y="134">PART 2 · PERCEPTION</text></g>
+<path class="flow" marker-end="url(#a)" d="M452 80 L474 80"/><path class="flow" marker-end="url(#a)" d="M452 128 L474 136"/>
+<g class="bluebox"><rect class="box" x="474" y="56" width="250" height="48"/><text class="t" x="484" y="76">Chunk and embed</text><text class="s" x="484" y="94">vector index: Milvus, Qdrant, pgvector</text></g>
+<g class="bluebox"><rect class="box" x="474" y="112" width="250" height="48"/><text class="t" x="484" y="132">Extract entities and relations</text><text class="s" x="484" y="150">graph: GraphRAG</text></g>
+<path class="flow" marker-end="url(#a)" d="M724 80 L746 102"/><path class="flow" marker-end="url(#a)" d="M724 136 L746 108"/>
+<g class="hotbox"><rect class="box" x="746" y="62" width="230" height="84"/><text class="t" x="756" y="86">The copy</text><text class="s" x="756" y="104">chunks or nodes, each with:</text><text class="lv" x="756" y="134">ACL · AS-OF DATE · SOURCE VERSION</text></g>
+<text class="note" x="992" y="78">Access: the ACL travels with the chunk and</text><text class="note" x="992" y="94">is checked at query time, as the user.</text><text class="note" x="992" y="110">OWASP LLM08, LLM02.</text>
+<text class="note" x="992" y="132">Erasure: a deletion that does not reach the</text><text class="note" x="992" y="148">copy is not a deletion. GDPR Art. 17, 5(1)(e).</text>
+<text class="note" x="30" y="178">Poisoning happens here: a document placed where the crawler reads it is an instruction the model will obey later. OWASP LLM04, LLM01; AI Act Art. 15(5) names "data poisoning".</text>
+<text class="note" x="30" y="196">Freshness happens here too: the answer is as old as the last ingest, and the as-of date is the only thing that says so.</text>
+<text class="ref" x="30" y="232">S1 · PART 1 (VECTOR_IO, IDENTITY) · PART 5 (RECORDS)</text>
+<rect class="frame" x="20" y="270" width="1240" height="350"/>
+<text class="cap" x="32" y="292" fill="currentColor">ASK · WHO DECIDES WHAT TO READ</text>
+<g class="greybox"><rect class="box" x="40" y="400" width="200" height="84"/><text class="t" x="52" y="424">A question</text><text class="s" x="52" y="442">from a person, as that person</text><text class="ref" x="52" y="472">IDENTITY TRAVELS</text></g>
+<g class="bluebox"><rect class="box" x="380" y="310" width="330" height="76"/><text class="t" x="392" y="334">Classic RAG</text><text class="s" x="392" y="352">the retriever decides: top-k by similarity, one pass</text><text class="lv" x="392" y="374">LEVEL 2</text></g>
+<g class="bread"><rect x="648" y="356" width="52" height="22" rx="3"/><text class="badge" x="674.0" y="371" text-anchor="middle">READ</text></g>
+<path class="flow" marker-end="url(#a)" d="M240 442 C310 442 310 348 380 348"/>
+<text class="note" x="740" y="332">The person reads the answer and the citation. The risk is the</text>
+<text class="note" x="740" y="348">chunk the user was not allowed to see, and how old it is.</text>
+<text class="note" x="740" y="364">Lewis et al., 2020: parametric memory plus a dense index.</text>
+<g class="hotbox"><rect class="box" x="380" y="420" width="330" height="76"/><text class="t" x="392" y="444">Agentic RAG</text><text class="s" x="392" y="462">the model decides: what to search, where, how often</text><text class="lv" x="392" y="484">LEVEL 3</text></g>
+<g class="bread"><rect x="648" y="466" width="52" height="22" rx="3"/><text class="badge" x="674.0" y="481" text-anchor="middle">READ</text></g>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8" marker-end="url(#ah)" d="M240 442 C310 442 310 458 380 458"/>
+<text class="note" x="740" y="442">Retrieval has become an action: a tool call through the gateway,</text>
+<text class="note" x="740" y="458">run as the user, every query recorded. OWASP LLM06.</text>
+<text class="note" x="740" y="474">Singh et al., 2025: &quot;dynamically manage retrieval strategies&quot;.</text>
+<g class="bluebox"><rect class="box" x="380" y="530" width="330" height="76"/><text class="t" x="392" y="554">Graph RAG</text><text class="s" x="392" y="572">the ingest decided: entities and relations, up front</text><text class="lv" x="392" y="594">LEVEL 2</text></g>
+<g class="bread"><rect x="648" y="576" width="52" height="22" rx="3"/><text class="badge" x="674.0" y="591" text-anchor="middle">READ</text></g>
+<path class="flow" marker-end="url(#a)" d="M240 442 C310 442 310 568 380 568"/>
+<text class="note" x="740" y="552">Global questions over a corpus. The risk moved to ingest time:</text>
+<text class="note" x="740" y="568">who extracted the relation, from which version, when.</text>
+<text class="note" x="740" y="584">Edge et al., 2024: entity graph and community summaries.</text>
+</svg>
+  </div>
+  <div class="legend"><span><i class="sw g1"></i>no language model</span><span><i class="sw g3"></i>your sources, a person reads</span><span><i class="sw hot"></i>the copy, and the retrieval that became an action</span><span>Levels from part 1: 2 proposes · 3 acts under approval</span></div>
+  <figcaption>Top: ingest. Sources with their access lists go through a parser, then into a vector index or a graph. The copy is the hot box: every chunk or node carries an access list, an as-of date and a source version, or the four properties below cannot be met. Bottom: the question, and who decides what is read. Only agentic RAG is hot: the model chooses the retrieval, which makes it an action through the tool gateway of the first series.</figcaption>
+</figure>
+
+<div class="post">
+  <h2>The index is a copy</h2>
+  <p>Four properties follow from that sentence, and each one is a requirement on the ingest pipeline, not on the model.</p>
+  <p><strong>Access.</strong> The model has no permissions of its own; part 3 established that for the copilot and it holds here. What it inherits is the user's, and the retriever must honour them at query time: the same user, the same identity from the platform's identity provider, evaluated against the access list that travelled with each chunk. A retriever that searches the whole index and filters afterwards has already leaked; a retriever that searches an index built without access lists cannot filter at all. OWASP's 2025 list names both halves: "Sensitive Information Disclosure" and "Vector and Embedding Weaknesses", the latter written for systems "relying on semantic search and retrieval". The first series had identity at the ingress and at the tool gateway. This row needs it at the index.</p>
+  <p><strong>Freshness.</strong> Every chunk carries the version of its source and the date it was ingested, and the answer states them. That is the whole freshness axis from part 1, made concrete. A policy replaced on Monday is answered from the Friday version until the next ingest, and nothing in the model knows. GDPR Article 5(1)(d) asks that personal data be "accurate and, where necessary, kept up to date"; the index is where that clause is met or missed for this row.</p>
+  <p><strong>Erasure.</strong> A deletion in the source system that does not propagate to the index is not a deletion. Article 17 gives the data subject "the erasure of personal data concerning him or her without undue delay", and Article 5(1)(e) limits storage to "no longer than is necessary for the purposes". Whether an embedding of a paragraph about a person is personal data is a question I will leave to counsel; the paragraph next to it in the chunk store certainly is. The ingest pipeline needs a delete path that is as reliable as its insert path, and a record that it ran.</p>
+  <p><strong>Integrity.</strong> The index is fed by a crawler, and a crawler reads what is placed where it reads. A document that contains instructions is, once retrieved, an instruction to the model. OWASP calls it "Prompt Injection" when it arrives through the prompt and "Data and Model Poisoning" when it arrives through the data; the AI Act's Article 15(5) names "data poisoning" among the attacks a high-risk system must resist. The defences are dull: a list of what the crawler may read, a review of what enters a graph, an input guardrail between the retrieved chunk and the model, and a record of which chunk was in the context when the answer went wrong.</p>
+
+  <h2>What the platform owes them</h2>
+  <p>Take part 3's platform and add the index and everything that feeds it.</p>
+  <ul>
+    <li><strong>An ingest pipeline with lineage.</strong> The parser from part 2, Docling for layout and OCR, is the data stage of this row. Each chunk or node records its source, version, ingest date and access list; each run records what it inserted and what it deleted. This is the same Article 10(2) discipline part 2 had, applied to a store that changes every night.</li>
+    <li><strong>An index you can govern.</strong> Milvus, an LF AI &amp; Data project under Apache-2.0, v3.0.2 of 20 September 2026. Qdrant, Apache-2.0, v1.19.1 of 4 September 2026. pgvector, under the PostgreSQL licence, v0.8.6 of 22 September 2026, which puts the vectors in the database you already back up, permission and audit. Weaviate, v1.39.6 of 22 September 2026. The first series placed the vector store behind the OGX server's Vector_IO in part 1; whichever you choose, the two questions are the same: does it evaluate a per-document access filter inside the query, and does it log what it returned. For graphs, Microsoft's GraphRAG, MIT, v3.1.2 of 21 August 2026, is the reference implementation of the paper; the graph it builds is an artefact to version and review like a model.</li>
+    <li><strong>Identity at the retriever.</strong> The question arrives with the user's identity from Keycloak or the workload identity from SPIRE, as in the first series, and the retrieval runs under it. For agentic RAG this is not optional: the model's search is a tool call, it goes through the MCP gateway of part 1, the tool is on an allowlist, and the query is recorded with the caller.</li>
+    <li><strong>Records that include what was read.</strong> The GenAI semantic conventions from part 3 have an "embeddings" operation, so the embedding call is traced. The retrieval itself is a database call; nothing in the conventions records which chunks went into the context. That record is yours to make, and it is the one an auditor will ask for: for this answer, which chunks, from which versions, retrieved under whose identity. Keep it with the answer, under the six-month floor of Article 26(6) if the system is high-risk, and under the data-protection decision from part 3 either way, because the chunks are content.</li>
+    <li><strong>Two more tests in the rollout gate.</strong> Part 3's reference set and judge apply. This row adds two measures the judge can score: whether the right chunk was in the context at all, and whether the answer is supported by the chunks it cites rather than by the weights. And a new trigger: the gate reruns on every index rebuild, not only on every model change, because the index is part of the system under test.</li>
+  </ul>
+
+  <h2>Where the law reaches this row</h2>
+  <p><strong>Through data protection, first.</strong> This is the first row where the law's main handle is not the AI Act. GDPR Article 5(1) gives the index its five constraints in one paragraph: purpose limitation, data "collected for specified, explicit and legitimate purposes and not further processed in a manner that is incompatible with those purposes"; minimisation, "limited to what is necessary"; accuracy; storage limitation; and integrity, "protection against unauthorised or unlawful processing". Article 5(2) adds that the controller must "be able to demonstrate compliance", which is what the ingest records are for. Article 17 is the erasure path. The Swiss FADP carries the same principles; the first series read its Articles 7, 8 and 12, protection by design, data security and the record of processing activities, and an index of your documents is a processing activity that belongs in that record.</p>
+  <p><strong>Through the AI Act, lightly.</strong> Article 50(1) for any assistant a person talks to. Articles 10 and 15(5) if the job is on Annex III, in which case the index is training-adjacent data and poisoning is a named attack. Article 26(6) for the logs. Nothing in Annex III says "retrieval"; the row inherits the risk class of the job it serves.</p>
+  <p><strong>Through security law.</strong> NIS2 Article 21(2) asks for "access control policies and asset management" and "the use of cryptography". An index of everything an organisation knows is a single asset that holds all of it, at rest, in a form built to be searched; it belongs on the asset list with the encryption and the access policy that implies. The same article's supply-chain clause covers the embedding model and the store.</p>
+  <p><strong>Through the licence.</strong> An index is a reproduction of the documents in it. For your own documents that is your decision. For licensed content, manuals, standards, market data, the licence says whether a copy built for machine retrieval is allowed, and most were written before anyone asked. Read it before the crawler does.</p>
+
+  <h2>Three organisations, nine jobs</h2>
+  <p>The same three organisations. Each job is placed by who decides what is read, and the last column is what the copy brings with it.</p>
+</div>
+
+<div class="wide"><div class="tblbox"><table class="jobs"><colgroup><col style="width:21%"><col style="width:10%"><col style="width:11%"><col style="width:27%"><col style="width:31%"></colgroup>
+    <thead><tr><th>Job</th><th>Family, level</th><th>Worst action</th><th>What the platform must provide</th><th>Regulatory line</th></tr></thead>
+    <tbody>
+      <tr><td>A public agency gives caseworkers an assistant over the regulations, circulars and internal guidance they apply.</td><td>Classic RAG, 2</td><td>read; an outdated rule applied</td><td>Ingest keyed to the official version of each text, as-of date in every answer, citation to the article; the gate reruns on every circular.</td><td>Not an Annex III row by itself; if the answer feeds a benefit decision, Annex III 5(a) reaches the system it serves. Article 4 for the caseworkers. FADP Article 12: the index is in the record of processing.</td></tr>
+      <tr><td>The same agency answers citizens' questions on public information in a chat.</td><td>Classic RAG, 2</td><td>read; a wrong answer to the public</td><td>Index limited to published texts, so there is no access question; faithfulness scored in the gate; a refusal path; conversations under a retention decision.</td><td>Article 50(1): the citizen is told at the first interaction. Article 50(4) if answers are published rather than given. GDPR and FADP for what the citizen types.</td></tr>
+      <tr><td>The same agency lets caseworkers search across citizens' files by asking, and the assistant decides which files to open.</td><td>Agentic RAG, 3</td><td>read: a file the caseworker may not open</td><td>Every retrieval runs as the caseworker through the tool gateway, against the file system's own access list; each query and each file opened recorded with the caseworker's identity; a search that returns nothing is recorded too.</td><td>GDPR Article 5(1)(b) and (f): purpose and access. FADP Articles 7 and 8. OWASP LLM06. Not Annex III, unless what is found feeds a decision listed there.</td></tr>
+      <tr><td>A bank gives advisers an assistant over product sheets, pricing and internal policies.</td><td>Classic RAG, 2</td><td>read; a wrong condition quoted to a client</td><td>Source version and validity date on every chunk; citation shown to the adviser; the index rebuilt from the document system, never from mail.</td><td>FINMA 08/2024 §2.2 inventory entry and §2.5 documentation of data selection. Not Annex III.</td></tr>
+      <tr><td>The same bank analyses master agreements with a graph of clauses, parties and dependencies, and asks which contracts a change of law touches.</td><td>Graph RAG, 2</td><td>read; a missed dependency</td><td>The extracted graph versioned and reviewed by a lawyer sample before use; each edge traceable to the clause and the contract version; a rebuild when a contract changes.</td><td>Not Annex III. The graph is a derived record of contractual data; confidentiality and NIS2 Article 21(2) access control apply to it as to the contracts. Counsel owns the review.</td></tr>
+      <tr><td>The same bank's investigators use an assistant that searches transactions, alerts and prior cases on its own to build a picture.</td><td>Agentic RAG, 3</td><td>read: a case outside the investigator's remit</td><td>Retrieval as the investigator through the tool gateway; every query and every hit recorded and kept with the case; the assistant cannot write to the case file.</td><td>Anti-money-laundering rules govern the case; GDPR Article 5(1)(b) purpose limitation for the data reused; NIS2 for the systems. Annex III 5(b) excludes fraud detection; the bank should still check where the picture goes.</td></tr>
+      <tr><td>A manufacturer gives technicians an assistant over maintenance manuals, with several machine generations in service.</td><td>Classic RAG, 2</td><td>read; the wrong procedure for the machine in front of them</td><td>Chunks keyed to machine model and manual revision; the answer states both; a technician cannot get an answer without saying which machine.</td><td>Product-safety and machinery rules for the procedure; the manual's licence for the index if it is the supplier's. Not Annex III.</td></tr>
+      <tr><td>The same manufacturer maps which part depends on which standard, supplier and certificate, and asks what a withdrawn certificate affects.</td><td>Graph RAG, 2</td><td>read; a missed part ships</td><td>Graph built from the PLM system with each edge traceable; a review of extracted relations by an engineer sample; rebuild on every bill-of-materials change.</td><td>Product-compliance rules for the parts; trade-secret protection for the graph, which is the company's supply chain in one file; NIS2 Article 21(2) supply-chain security if the manufacturer is in scope.</td></tr>
+      <tr><td>The same manufacturer lets engineers ask an assistant that searches the PLM system, tickets and mail on its own.</td><td>Agentic RAG, 3</td><td>read: a project the engineer is not cleared for</td><td>Retrieval as the engineer through the tool gateway against each system's own access list; export-controlled projects excluded from the index rather than filtered; every query recorded.</td><td>Trade secrets and, where applicable, export-control rules that do not care whether a person or a retriever opened the file. GDPR Article 5(1)(f). NIS2.</td></tr>
+    </tbody>
+  </table></div></div>
+
+<div class="post">
+  <p>None of the nine is high-risk under the AI Act on its own, and every one of them carries a data-protection or confidentiality obligation that already applied to the documents before anyone indexed them. That is the pattern of this row: the law did not change, the copy did. The three agentic rows are the ones where the platform column grows a gateway and an identity, and those are the columns of part 5.</p>
+
+  <h2>What this row teaches the next</h2>
+  <p>Agentic RAG is an agent that is only allowed to read. It chooses what to fetch, it goes through a tool gateway, it runs as the user, and every query is recorded; if it were not, the file the caseworker may not open would be one similarity search away. All of that machinery exists so that a read stays a read. The next row lets the same machinery write. The question that carries over is the one the reversibility axis was made for: when the worst action is no longer a disclosure but a change in a system, what has to be true before the model is allowed to make it?</p>
+
+  <div class="cta">
+    <strong>Next in the series</strong>
+    <ol class="series">
+      <li><span><a href="../part-1/">Part 1</a></span>The map: who decides, who acts, and how far the system goes on its own.</li>
+      <li><span><a href="../part-2/">Part 2</a></span>AI without a language model: prediction, recommendation, perception, optimisation.</li>
+      <li><span><a href="../part-3/">Part 3</a></span>Generating and assisting: generative AI, integrated copilots, small specialised models.</li>
+      <li><span>Part 5</span>Acting within a perimeter: the AI agent with its tools, and the augmented workflow as the migration path.</li>
+      <li><span>Part 6</span>Pursuing a goal with several agents: agentic AI, delegation, intent. The most demanding regime, and the one sold first.</li>
+    </ol>
+  </div>
+
+  <div class="notice">This article is an engineer's reading of public legal texts and public code, checked against the versions and dates given below. It is not legal advice. For a real deployment, read the texts with counsel and with your supervisor's guidance for your sector.</div>
+
+  <div class="notice"><strong>Read, not run.</strong> Everything in this series comes from reading public documents and public code at a stated date, not from running them in production. Treat it as a map to test, not a result to trust: the texts are amended, the projects move monthly, and a placement that is right for one organisation's wiring is wrong for another's. Place your own jobs on the map with the people who own them. When something here does not match what you find, tell me, or better, tell the project or the authority concerned: that is the only way a map like this one stays true.</div>
+
+  <hr>
+  <div class="sources">
+    <strong>Sources</strong>
+    <ol>
+      <li>Patrick Lewis et al., <a href="https://arxiv.org/abs/2005.11401">Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</a>, arXiv 2005.11401, submitted 22 May 2020, v4 of 12 April 2021. Darren Edge et al., <a href="https://arxiv.org/abs/2404.16130">From Local to Global: A Graph RAG Approach to Query-Focused Summarization</a>, arXiv 2404.16130, submitted 24 April 2024, latest version 19 February 2025. Aditi Singh et al., <a href="https://arxiv.org/abs/2501.09136">Agentic Retrieval-Augmented Generation: A Survey on Agentic RAG</a>, arXiv 2501.09136, submitted 15 January 2025. Abstracts read 23 September 2026.</li>
+      <li><a href="https://genai.owasp.org/llm-top-10/">OWASP Top 10 for LLM Applications 2025</a>, entries LLM01 Prompt Injection, LLM02 Sensitive Information Disclosure, LLM04 Data and Model Poisoning, LLM06 Excessive Agency, LLM08 Vector and Embedding Weaknesses; read 23 September 2026.</li>
+      <li>Regulation (EU) 2016/679 (GDPR), <a href="https://gdpr-info.eu/art-5-gdpr/">Article 5</a> and <a href="https://gdpr-info.eu/art-17-gdpr/">Article 17</a>, read on gdpr-info.eu, 23 September 2026. Federal Act on Data Protection (FADP, SR 235.1), Articles 7, 8 and 12, as read for part 3 of the first series on Fedlex, 22 September 2026; the principles article was not re-read for this part and is not quoted.</li>
+      <li>Regulation (EU) 2024/1689 (AI Act), Article 4, Article 10, Article 15(5), Article 26(6), Article 50; Directive (EU) 2022/2555 (NIS2), Article 21(2); FINMA Guidance 08/2024, §2.2 and §2.5. As read for the earlier parts, 22 and 23 September 2026.</li>
+      <li><a href="https://github.com/milvus-io/milvus">Milvus</a>, LF AI &amp; Data, Apache-2.0, v3.0.2, 20 September 2026. <a href="https://github.com/qdrant/qdrant">Qdrant</a>, Apache-2.0, v1.19.1, 4 September 2026. <a href="https://github.com/pgvector/pgvector">pgvector</a>, PostgreSQL licence, v0.8.6, 22 September 2026. <a href="https://github.com/weaviate/weaviate">Weaviate</a>, v1.39.6, 22 September 2026. <a href="https://github.com/microsoft/graphrag">GraphRAG</a>, MIT, v3.1.2, 21 August 2026. <a href="https://github.com/docling-project/docling">Docling</a>, MIT, v2.130.0, 22 September 2026. Release tags and dates from each repository's GitHub releases or tags page, 23 September 2026.</li>
+      <li><a href="https://github.com/open-telemetry/semantic-conventions-genai">OpenTelemetry semantic conventions for GenAI</a>, the "embeddings" operation, read 23 September 2026. <a href="https://modelcontextprotocol.io/specification/2025-06-18">Model Context Protocol specification</a>, revision 2025-06-18, server primitives: resources, prompts, tools.</li>
+      <li><a href="https://hokonoken.github.io/agent-stack-blueprint/">Agent stack blueprint</a>, the first series, parts 1, 3 and 5, for the vector store behind the OGX server, identity, the regulatory matrix and the records.</li>
+    </ol>
+    <p>Independent work, not affiliated with any regulator, standards body, foundation or vendor named. Not legal advice. Product names belong to their owners. Views are my own and do not represent the position of my employer. Text and diagrams: <a href="../LICENSE.md">CC BY 4.0</a>; quoted code and documents stay under their own licences.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
