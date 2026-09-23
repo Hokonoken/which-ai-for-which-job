@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="author" content="Hokonoken">
+<meta name="description" content="Part 1 of Which AI for which job: the map. Eight families of AI system sorted by who decides and who acts, five levels of autonomy, the worst action, and which layer of the platform carries the risk.">
+<title>The Map of AI Families</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#131A24; --muted:#5A6675; --line:#D5DBE3; --band:#E9EDF3;
+  --rh:#B42318; --nv:#3F7D0B; --ms:#175CD3; --oss:#5A6675; --hot:#C2410C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+    --rh:#F97066; --nv:#86CB3C; --ms:#84ADFF; --oss:#94A1B2; --hot:#FB923C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+  --rh:#F97066; --nv:#86CB3C; --ms:#84ADFF; --oss:#94A1B2; --hot:#FB923C;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.55;padding-inline:20px;padding-block:32px 56px}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
+h1,h2,h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,4.6vw,44px);font-weight:700;line-height:1.06;letter-spacing:-.01em}
+h2{font-size:23px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:70ch;color:var(--muted);margin:0}
+header{display:flex;flex-direction:column;gap:12px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted);padding:12px 0;border-block:1px solid var(--line)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.sw{display:inline-block;width:22px;height:12px;border:2px solid var(--oss);background:var(--surface)}
+.sw.rh{border-color:var(--rh)} .sw.nv{border-color:var(--nv)} .sw.ms{border-color:var(--ms);border-style:dashed}
+figure{margin:0;display:flex;flex-direction:column;gap:12px}
+.svgbox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:10px}
+svg{display:block;min-width:1040px;width:100%;height:auto;color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif}
+svg .b rect{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .rh rect{stroke:var(--rh)} svg .nv rect{stroke:var(--nv)}
+svg .ms rect{stroke:var(--ms);stroke-dasharray:6 3}
+svg .t{font-size:13px;font-weight:600;fill:currentColor}
+svg .s{font-size:10.5px;fill:var(--muted)}
+svg .tag{font-size:9px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace}
+svg .trh{fill:var(--rh)} svg .tnv{fill:var(--nv)} svg .tms{fill:var(--ms)} svg .toss{fill:var(--oss)}
+svg .frame{fill:var(--band);stroke:var(--line);stroke-width:1}
+svg .pod{fill:none;stroke:var(--nv);stroke-width:1.6;stroke-dasharray:7 4}
+svg .agt{fill:none;stroke:var(--ms);stroke-width:1.4;stroke-dasharray:6 3}
+svg .cap{font-size:10.5px;letter-spacing:.07em;font-weight:600}
+svg .lbl{font-size:10.5px;fill:var(--muted)}
+svg .flow{fill:none;stroke:currentColor;stroke-width:1.3}
+svg .msflow{fill:none;stroke:var(--ms);stroke-width:1.4;stroke-dasharray:5 3}
+svg .tr{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:2 4}
+svg .mfill{fill:var(--ms)} svg .tfill{fill:var(--muted)}
+svg .bar rect{fill:var(--band);stroke:var(--line)}
+svg .mat{font-size:9px;font-style:italic;fill:var(--muted)}
+svg .svc{fill:none;stroke:var(--line);stroke-width:1.6;stroke-dasharray:3 3}
+svg .hotn rect{fill:var(--surface);stroke:var(--hot);stroke-width:2.4}
+figcaption a{color:var(--hot)}
+svg a{cursor:pointer}
+.tblbox{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:800px;font-size:13.5px}
+th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:10px;border-bottom:1px solid var(--line);background:var(--band)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600;white-space:nowrap}
+td code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px}
+svg .blue rect{fill:var(--surface);stroke:var(--ms);stroke-width:1.8}
+svg .green rect{fill:var(--surface);stroke:var(--nv);stroke-width:1.8}
+svg .tblue{fill:var(--ms)} svg .tgreen{fill:var(--nv)}
+svg .wflow{fill:none;stroke:var(--nv);stroke-width:2.2}
+svg .wflow2{fill:none;stroke:var(--ms);stroke-width:2.2}
+svg .shadow{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 3}
+svg .gate rect{fill:var(--band);stroke:var(--hot);stroke-width:1.6}
+svg .hott{fill:var(--hot)}
+.sw.hot{border-color:var(--hot);border-width:3px}
+svg .ghost rect{fill:var(--surface);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3}
+figcaption{max-width:78ch;color:var(--muted);font-size:14px}
+ol.steps{margin:0;padding-left:22px;max-width:78ch;display:flex;flex-direction:column;gap:8px}
+ol.steps li::marker{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));border:1px solid var(--line);background:var(--surface)}
+.col{padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.col h3{display:flex;align-items:center;gap:10px}
+.col ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.col code,.q code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere}
+.q{border-left:3px solid var(--rh);padding:6px 14px;max-width:78ch;display:flex;flex-direction:column;gap:6px}
+.q blockquote{margin:0;font-size:16px}
+.q span{font-size:13px;color:var(--muted)}
+footer{font-size:12.5px;color:var(--muted);max-width:88ch}
+section{display:flex;flex-direction:column;gap:14px}
+
+.post{max-width:76ch;margin:0 auto;display:flex;flex-direction:column;gap:22px;font-size:16.5px;line-height:1.6}
+.post h1{font-size:clamp(30px,5vw,46px)}
+.post h2{margin-top:10px}
+.post p{margin:0}
+.post ul,.post ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.meta{font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--hot)}
+.takeaways{border:1px solid var(--line);background:var(--surface);padding:18px 22px;display:flex;flex-direction:column;gap:10px}
+.takeaways h3{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.takeaways ol{font-size:15.5px}
+.quote{border-left:3px solid var(--rh);padding:8px 18px;display:flex;flex-direction:column;gap:8px}
+.quote blockquote{margin:0;font-size:18px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:500}
+.quote span{font-size:13.5px;color:var(--muted)}
+.cta{border:2px solid var(--hot);padding:18px 22px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.cta strong{color:var(--hot)}
+.series{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
+.series li{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:baseline}
+.series li span a{color:inherit;text-decoration:none}
+.series li span a:hover{text-decoration:underline}
+.series li span{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--hot);white-space:nowrap}
+.fig{display:flex;flex-direction:column;gap:10px}
+.fig .svgbox{padding:8px}
+.fig figcaption{font-size:13.5px}
+.wide{max-width:1600px;margin:0 auto;width:100%}
+.sources{font-size:13.5px;color:var(--muted)}
+.sources ol{gap:4px}
+.sources a{color:inherit}
+hr{border:0;border-top:1px solid var(--line);margin:8px 0}
+.notice{font-size:13.5px;color:var(--muted);border:1px dashed var(--line);padding:10px 14px}
+.sn{max-width:76ch;margin:0 auto 18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.sn a{color:var(--us);text-decoration:none}
+.sn a:hover,.sn a:focus-visible{text-decoration:underline;outline:none}
+body{margin:0}
+
+/* larger type */
+.post{font-size:18px;line-height:1.65}
+.takeaways ol{font-size:17px}
+.meta{font-size:14.5px}
+.kicker{font-size:13px}
+figcaption,.fig figcaption{font-size:15px}
+.fig figcaption,figure figcaption{max-width:110ch;width:100%;margin:0;padding-inline:0;text-align:left}
+table,table.repl{font-size:15px}
+th{font-size:12px}
+pre.cfg{font-size:13.5px;line-height:1.6}
+.cfgblock .src{font-size:12.5px}
+.cfgblock .note{font-size:15px}
+.cfgblock > strong{font-size:16px}
+.notice{font-size:15px}
+.sources{font-size:15px}
+.rules p,.cv p,.law p,.law ul{font-size:15.5px}
+.rules h3,.cv h3{font-size:17.5px}
+.law h3{font-size:17px}
+.law .when{font-size:12.5px}
+.series{font-size:16.5px}
+.sn{font-size:13px}
+
+/* desktop scale: reads like a 130 % browser zoom, phones untouched */
+@media (min-width:641px){body{zoom:1.3}}
+
+/* series 2: matrix figure */
+svg .hd{font-size:10.5px;letter-spacing:.07em;font-weight:600;fill:var(--muted)}
+svg .fam{font-size:13.5px;font-weight:600;fill:currentColor}
+svg .sub{font-size:10.5px;fill:var(--muted)}
+svg .cell{font-size:11.5px;fill:currentColor}
+svg .rowline{stroke:var(--line);stroke-width:1}
+svg .band{fill:var(--band)}
+svg .lvl{fill:var(--surface);stroke:var(--line);stroke-width:1}
+svg .lvl.on{stroke:none}
+svg .g1 .lvl.on{fill:var(--oss)} svg .g2 .lvl.on{fill:var(--nv)} svg .g3 .lvl.on{fill:var(--ms)} svg .g4 .lvl.on{fill:var(--hot)}
+svg .g1 .bar{fill:var(--oss)} svg .g2 .bar{fill:var(--nv)} svg .g3 .bar{fill:var(--ms)} svg .g4 .bar{fill:var(--hot)}
+svg .badge{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500}
+svg .bread rect{fill:var(--surface);stroke:var(--oss);stroke-width:1.2} svg .bread text{fill:var(--oss)}
+svg .bwrite rect{fill:var(--surface);stroke:var(--ms);stroke-width:1.2} svg .bwrite text{fill:var(--ms)}
+svg .bcommit rect{fill:var(--surface);stroke:var(--hot);stroke-width:1.8} svg .bcommit text{fill:var(--hot)}
+svg .ref{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;fill:var(--muted)}
+.sw.g1{border-color:var(--oss);background:var(--oss)} .sw.g2{border-color:var(--nv);background:var(--nv)} .sw.g3{border-color:var(--ms);background:var(--ms)} .sw.g4{border-color:var(--hot);background:var(--hot)}
+.legend{max-width:1600px;margin:0 auto;width:100%}
+table.jobs{table-layout:fixed;min-width:960px}
+.wide + .post,.fig + .post{margin-top:26px}
+.post + .wide{margin-top:14px}
+table.jobs td:first-child{white-space:normal;font-weight:400}
+table.jobs td,table.jobs th{white-space:normal}
+.lvls{border:1px solid var(--line);background:var(--surface);padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 18px;font-size:15px}
+.lvls div{display:flex;flex-direction:column;gap:2px}
+.lvls b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;color:var(--hot)}
+</style>
+</head>
+<body>
+<nav class="sn"><span></span><a href="../">The series</a><span>Part 2 · coming</span></nav>
+<div class="post">
+  <span class="kicker">Which AI for which job · part 1 of 6</span>
+  <h1>The map: who decides, who acts, and how far the system goes on its own</h1>
+  <p class="lede">The first series drew an agent platform, layer by layer. It never said when you need one. This series answers the question a business reader asks first: which kind of AI system does this job call for? The names on the slides will not tell you. Two questions will: who decides, and who acts. Eight families then fall into place, and the gaps between them show.</p>
+  <div class="meta"><span>Hokonoken</span><span>September 2026</span><span>Reading time: 14 min</span><span>Not legal advice · Views are my own, not my employer's</span></div>
+
+  <div class="takeaways">
+    <h3>Three things to take away</h3>
+    <ol>
+      <li>Sort systems by <strong>who decides and who acts</strong>, not by the word on the slide. A model that emits a score, a model that writes text a person reads, and a model that picks actions inside a system are three regimes of responsibility, whatever they are called that quarter.</li>
+      <li><strong>"Agentic" is not a higher level, it is a different regime.</strong> Each step down the map moves the risk: from the quality of a prediction, to the content a person reads, to the sources a system may read, to the actions it takes. The controls change kind, not size.</li>
+      <li><strong>The law reads the autonomy axis.</strong> The AI Act defines an AI system by its "varying levels of autonomy" and its output types; its oversight article asks for a person who can override or stop; Swiss data-protection law gives a right to a human review of a decision "based exclusively on automated processing". Where a job sits on the map decides which of those apply, and a logistic regression can sit higher than a frontier model.</li>
+    </ol>
+  </div>
+
+  <h2>Why not the names on the slide</h2>
+  <p>Five names come up in every deck: predictive AI, generative AI, RAG, AI agent, agentic AI. They do not belong to the same list. One is a model class (generative), one is a technique (retrieval-augmented generation), two are deployment patterns (agent, agentic), and the first is everything that was called machine learning until 2022. Sorting a job by which of those five it "is" tells you what the vendor sells. It does not tell you what the job needs.</p>
+  <p>Two questions do. <strong>Who decides:</strong> what produces the output that matters? A trained model emitting a score. A language model emitting text. A language model choosing the next action. An orchestrator splitting a goal between agents. <strong>Who acts:</strong> who turns that output into an effect on the world? A person. A business rule. The system itself, inside a perimeter. Several systems, across a process.</p>
+  <p>The law already sorts this way. The AI Act's definition of an AI system, Article 3(1), is a machine-based system "designed to operate with varying levels of autonomy" that "infers, from the input it receives, how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments". Four output types and an autonomy dial: that is the map, in one sentence, written in 2024. The word "agent" does not appear in Article 3 at all.</p>
+  <p>Add three axes and the picture becomes usable. <strong>Autonomy</strong>, from a system that informs to one that delegates. <strong>Reversibility of the worst action</strong>: reading, writing a record, or committing something that cannot be quietly undone, like moving money, sending a letter, revoking a benefit. <strong>Freshness of the data</strong> the system reasons from: a training run, an index, or the live system. And, to tie this series to the first one, the layer of the platform that carries the risk for each family.</p>
+
+  <h2>Eight families</h2>
+</div>
+
+<figure class="fig wide">
+  <div class="svgbox">
+<svg viewBox="0 0 1280 670" role="img" aria-label="Matrix of eight AI families against six axes: who decides, who acts, autonomy level from one to five, worst action (read, write or commit), how fresh the data is, and the layer of the platform that carries the risk, with the part of the first series that covers that layer. The families run from predictive models at the top to agentic AI at the bottom; autonomy and the weight of the worst action rise down the page.">
+<rect class="band" x="20" y="20" width="1240" height="38"/>
+<text class="hd" x="30" y="44">FAMILY</text>
+<text class="hd" x="272" y="44">WHO DECIDES</text>
+<text class="hd" x="462" y="44">WHO ACTS</text>
+<text class="hd" x="650" y="44">AUTONOMY 1 TO 5</text>
+<text class="hd" x="800" y="44">WORST ACTION</text>
+<text class="hd" x="915" y="44">DATA AS OF</text>
+<text class="hd" x="1035" y="44">LAYER THAT CARRIES THE RISK</text>
+<g class="g1">
+<line class="rowline" x1="20" y1="64" x2="1260" y2="64"/>
+<rect class="bar" x="20" y="74" width="4" height="54"/>
+<text class="fam" x="34" y="94">Predictive, recommendation</text><text class="sub" x="34" y="111">scoring, churn, fraud, next best offer</text>
+<text class="cell" x="272" y="93">a trained model</text><text class="cell" x="272" y="110">output: a score or a rank</text>
+<text class="cell" x="462" y="93">a person, or a business rule</text><text class="cell" x="462" y="110">wired to the score</text>
+<text class="cell" x="1035" y="93">model registry, drift and</text><text class="cell" x="1035" y="110">performance monitoring</text>
+<rect class="lvl on" x="650" y="90" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="678" y="90" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="706" y="90" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="734" y="90" width="22" height="22" rx="3"/>
+<rect class="lvl" x="762" y="90" width="22" height="22" rx="3"/>
+<g class="bcommit"><rect x="800" y="90" width="66" height="22" rx="3"/><text class="badge" x="833.0" y="105" text-anchor="middle">COMMIT</text></g>
+<text class="cell" x="915" y="105">training run</text>
+<text class="ref" x="1035" y="127">S1 · PART 5, 6</text>
+</g>
+<g class="g1">
+<line class="rowline" x1="20" y1="138" x2="1260" y2="138"/>
+<rect class="bar" x="20" y="148" width="4" height="54"/>
+<text class="fam" x="34" y="168">Perception, optimisation</text><text class="sub" x="34" y="185">vision, speech, scanned documents, solvers</text>
+<text class="cell" x="272" y="167">a trained model or a solver</text><text class="cell" x="272" y="184">output: a label, a plan</text>
+<text class="cell" x="462" y="167">the next system in line</text><text class="cell" x="462" y="184">or a person</text>
+<text class="cell" x="1035" y="167">model registry, input validation,</text><text class="cell" x="1035" y="184">the system that consumes the output</text>
+<rect class="lvl on" x="650" y="164" width="22" height="22" rx="3"/>
+<rect class="lvl" x="678" y="164" width="22" height="22" rx="3"/>
+<rect class="lvl" x="706" y="164" width="22" height="22" rx="3"/>
+<rect class="lvl" x="734" y="164" width="22" height="22" rx="3"/>
+<rect class="lvl" x="762" y="164" width="22" height="22" rx="3"/>
+<g class="bread"><rect x="800" y="164" width="52" height="22" rx="3"/><text class="badge" x="826.0" y="179" text-anchor="middle">READ</text></g>
+<text class="cell" x="915" y="179">training run</text>
+<text class="ref" x="1035" y="201">S1 · PART 5</text>
+</g>
+<g class="g2">
+<line class="rowline" x1="20" y1="212" x2="1260" y2="212"/>
+<rect class="bar" x="20" y="222" width="4" height="54"/>
+<text class="fam" x="34" y="242">Generative</text><text class="sub" x="34" y="259">writing, summary, translation, code</text>
+<text class="cell" x="272" y="241">a language model</text><text class="cell" x="272" y="258">output: content</text>
+<text class="cell" x="462" y="241">a person who reads it</text><text class="cell" x="462" y="258">before it leaves</text>
+<text class="cell" x="1035" y="241">model gateway, content guardrails,</text><text class="cell" x="1035" y="258">no access to systems</text>
+<rect class="lvl" x="650" y="238" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="678" y="238" width="22" height="22" rx="3"/>
+<rect class="lvl" x="706" y="238" width="22" height="22" rx="3"/>
+<rect class="lvl" x="734" y="238" width="22" height="22" rx="3"/>
+<rect class="lvl" x="762" y="238" width="22" height="22" rx="3"/>
+<g class="bread"><rect x="800" y="238" width="52" height="22" rx="3"/><text class="badge" x="826.0" y="253" text-anchor="middle">READ</text></g>
+<text class="cell" x="915" y="253">model cut-off</text>
+<text class="ref" x="1035" y="275">S1 · PART 1, 2</text>
+</g>
+<g class="g2">
+<line class="rowline" x1="20" y1="286" x2="1260" y2="286"/>
+<rect class="bar" x="20" y="296" width="4" height="54"/>
+<text class="fam" x="34" y="316">Integrated copilot</text><text class="sub" x="34" y="333">inside the CRM, the IDE, the case file</text>
+<text class="cell" x="272" y="315">a language model</text><text class="cell" x="272" y="332">output: a proposal</text>
+<text class="cell" x="462" y="315">a person who accepts or edits</text><text class="cell" x="462" y="332">inside the host tool</text>
+<text class="cell" x="1035" y="315">the host application&#x27;s permissions;</text><text class="cell" x="1035" y="332">automation-bias controls</text>
+<rect class="lvl" x="650" y="312" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="678" y="312" width="22" height="22" rx="3"/>
+<rect class="lvl" x="706" y="312" width="22" height="22" rx="3"/>
+<rect class="lvl" x="734" y="312" width="22" height="22" rx="3"/>
+<rect class="lvl" x="762" y="312" width="22" height="22" rx="3"/>
+<g class="bwrite"><rect x="800" y="312" width="56" height="22" rx="3"/><text class="badge" x="828.0" y="327" text-anchor="middle">WRITE</text></g>
+<text class="cell" x="915" y="319">model cut-off</text>
+<text class="cell" x="915" y="336">+ host context</text>
+<text class="ref" x="1035" y="349">S1 · PART 3</text>
+</g>
+<g class="g3">
+<line class="rowline" x1="20" y1="360" x2="1260" y2="360"/>
+<rect class="bar" x="20" y="370" width="4" height="54"/>
+<text class="fam" x="34" y="390">Answering on your documents</text><text class="sub" x="34" y="407">RAG, agentic RAG, graph RAG</text>
+<text class="cell" x="272" y="389">a language model grounded</text><text class="cell" x="272" y="406">on retrieved passages</text>
+<text class="cell" x="462" y="389">a person; in agentic RAG the</text><text class="cell" x="462" y="406">model also picks what to fetch</text>
+<text class="cell" x="1035" y="389">vector store access control,</text><text class="cell" x="1035" y="406">citation, ingestion pipeline</text>
+<rect class="lvl" x="650" y="386" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="678" y="386" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="706" y="386" width="22" height="22" rx="3"/>
+<rect class="lvl" x="734" y="386" width="22" height="22" rx="3"/>
+<rect class="lvl" x="762" y="386" width="22" height="22" rx="3"/>
+<g class="bread"><rect x="800" y="386" width="52" height="22" rx="3"/><text class="badge" x="826.0" y="401" text-anchor="middle">READ</text></g>
+<text class="cell" x="915" y="401">index refresh</text>
+<text class="ref" x="1035" y="423">S1 · PART 1, 5</text>
+</g>
+<g class="g4">
+<line class="rowline" x1="20" y1="434" x2="1260" y2="434"/>
+<rect class="bar" x="20" y="444" width="4" height="54"/>
+<text class="fam" x="34" y="464">Augmented workflow</text><text class="sub" x="34" y="481">BPM or RPA with one or two model steps</text>
+<text class="cell" x="272" y="463">the workflow engine;</text><text class="cell" x="272" y="480">a model inside a step</text>
+<text class="cell" x="462" y="463">the engine, on its</text><text class="cell" x="462" y="480">deterministic path</text>
+<text class="cell" x="1035" y="463">the workflow engine; guardrails</text><text class="cell" x="1035" y="480">on each model step</text>
+<rect class="lvl" x="650" y="460" width="22" height="22" rx="3"/>
+<rect class="lvl" x="678" y="460" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="706" y="460" width="22" height="22" rx="3"/>
+<rect class="lvl" x="734" y="460" width="22" height="22" rx="3"/>
+<rect class="lvl" x="762" y="460" width="22" height="22" rx="3"/>
+<g class="bwrite"><rect x="800" y="460" width="56" height="22" rx="3"/><text class="badge" x="828.0" y="475" text-anchor="middle">WRITE</text></g>
+<text class="cell" x="915" y="475">live process data</text>
+<text class="ref" x="1035" y="497">S1 · PART 4</text>
+</g>
+<g class="g4">
+<line class="rowline" x1="20" y1="508" x2="1260" y2="508"/>
+<rect class="bar" x="20" y="518" width="4" height="54"/>
+<text class="fam" x="34" y="538">AI agent</text><text class="sub" x="34" y="555">one agent, its tools, a perimeter</text>
+<text class="cell" x="272" y="537">a language model that</text><text class="cell" x="272" y="554">chooses the next action</text>
+<text class="cell" x="462" y="537">the agent, through tools,</text><text class="cell" x="462" y="554">inside the perimeter</text>
+<text class="cell" x="1035" y="537">MCP gateway, identity, per-action</text><text class="cell" x="1035" y="554">policy, approval, records</text>
+<rect class="lvl" x="650" y="534" width="22" height="22" rx="3"/>
+<rect class="lvl" x="678" y="534" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="706" y="534" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="734" y="534" width="22" height="22" rx="3"/>
+<rect class="lvl" x="762" y="534" width="22" height="22" rx="3"/>
+<g class="bcommit"><rect x="800" y="534" width="66" height="22" rx="3"/><text class="badge" x="833.0" y="549" text-anchor="middle">COMMIT</text></g>
+<text class="cell" x="915" y="549">live systems</text>
+<text class="ref" x="1035" y="571">S1 · PART 1, 4, 5</text>
+</g>
+<g class="g4">
+<line class="rowline" x1="20" y1="582" x2="1260" y2="582"/>
+<rect class="bar" x="20" y="592" width="4" height="54"/>
+<text class="fam" x="34" y="612">Agentic AI</text><text class="sub" x="34" y="629">several agents, one goal</text>
+<text class="cell" x="272" y="611">an orchestrator, then</text><text class="cell" x="272" y="628">each agent on its sub-goal</text>
+<text class="cell" x="462" y="611">the agents, across</text><text class="cell" x="462" y="628">several systems</text>
+<text class="cell" x="1035" y="611">all of the above; intent, bounded</text><text class="cell" x="1035" y="628">delegation, audit tree, rollback</text>
+<rect class="lvl" x="650" y="608" width="22" height="22" rx="3"/>
+<rect class="lvl" x="678" y="608" width="22" height="22" rx="3"/>
+<rect class="lvl" x="706" y="608" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="734" y="608" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="762" y="608" width="22" height="22" rx="3"/>
+<g class="bcommit"><rect x="800" y="608" width="66" height="22" rx="3"/><text class="badge" x="833.0" y="623" text-anchor="middle">COMMIT</text></g>
+<text class="cell" x="915" y="623">live systems</text>
+<text class="ref" x="1035" y="645">S1 · PART 4, 5</text>
+</g>
+<line class="rowline" x1="20" y1="656" x2="1260" y2="656"/>
+</svg>
+  </div>
+  <div class="legend"><span><i class="sw g1"></i>no language model</span><span><i class="sw g2"></i>content, a person reads</span><span><i class="sw g3"></i>your sources, a person reads</span><span><i class="sw g4"></i>actions in systems</span><span>Autonomy 1 informs · 2 proposes · 3 acts under approval · 4 acts, reviewed after · 5 delegates</span><span>Worst action: read nothing changes · write a record changes, can be reversed · commit money, letters, rights; reversal is a new action</span></div>
+  <figcaption>The map. Eight families, sorted by who decides and who acts. The autonomy cells show the range a family is usually deployed at, not a ceiling: a predictive model wired to an automatic refusal sits at 4 with no language model in sight. The last column names the layer of the platform from the first series that carries the risk, and the part where it is described. Levels are a working scale of mine, not a standard; see the note below. Colours group the families by what a failure damages first.</figcaption>
+</figure>
+
+<div class="post">
+  <p>Two of the eight rows contain no language model. They run more of the world's AI than the other six combined, and they are the ones nobody calls AI at the budget meeting. Part 2 is theirs. The two content rows are where a person still reads everything before it leaves; the model writes, the human signs. The sources row is where the model reads what you own, and the risk becomes who was allowed to see which document. The three action rows are where the first series lives: the model, or a process around it, changes something in a system.</p>
+  <p>Three families from the usual lists are folded in rather than given a row. <strong>Small specialised models</strong>, fine-tuned for classification, extraction or routing, are a size choice, not a regime: they sit wherever the job they do sits, and they are often the right tool where a general model is used by reflex. <strong>Recommendation systems</strong> are the most deployed predictive case and share its row. <strong>Agentic RAG and graph RAG</strong> share the sources row, with one caveat the cell shows: once the model decides what to fetch, where and how many times, retrieval has become an action, and the governance changes with it. Part 4 takes that apart.</p>
+
+  <h2>The autonomy scale, and why it is mine</h2>
+  <p>There is no recognised standard for levels of autonomy in AI systems. The AI Act uses the phrase and does not grade it. So this series uses a working scale of five levels, borrowed in spirit from the way road vehicles are graded: SAE J3016 places a car at a level by asking who is driving, the person or the system, not by how good its sensors are. Same here. What places a system high is not the size of its model but who acts on the output.</p>
+  <div class="lvls">
+    <div><b>1 · INFORMS</b><span>Emits a score, a label, a rank. A person or a rule decides and acts.</span></div>
+    <div><b>2 · PROPOSES</b><span>Drafts content or a proposal. A person reads it before anything leaves.</span></div>
+    <div><b>3 · ACTS UNDER APPROVAL</b><span>Executes inside a perimeter; listed actions wait for a person.</span></div>
+    <div><b>4 · ACTS, REVIEWED AFTER</b><span>Executes inside a perimeter; a person can read the record and stop it.</span></div>
+    <div><b>5 · DELEGATES</b><span>Sets sub-goals and hands them to other agents. People set the goal and the boundaries.</span></div>
+  </div>
+  <p>The scale says nothing about model quality, and that is the point. A credit-scoring model from 2015, wired so that a score below a threshold refuses the application without anyone looking, is at level 4. A frontier model drafting emails that a person sends is at level 2. If your governance effort follows the model's sophistication, it is on the wrong row.</p>
+
+  <h2>Reading the map: three lines that matter</h2>
+  <p><strong>The autonomy line is the one the regulator reads.</strong> Article 14(4) of the AI Act asks that the person overseeing a high-risk system can "decide, in any particular situation, not to use" it, "disregard, override or reverse the output", and "intervene in the operation … or interrupt the system through a 'stop' button or a similar procedure". Every one of those verbs assumes a system that acts, or a decision that stands, without the person. At level 1 they are trivially met: the person is the one deciding. At level 4 they need a surface that exists, and the first series found that surface missing in every open component it read. The same article, 14(4)(b), names "automation bias", the "tendency of automatically relying or over-relying on the output". That clause is written for level 2: the copilot whose proposals get accepted by habit. Swiss law adds a third marker, Article 21 FADP: a decision "based exclusively on automated processing" with legal or considerable effect gives the person a right to have it reviewed by a natural person. "Exclusively" is a line between level 1 and level 4, and nothing in it mentions a language model.</p>
+  <p><strong>The reversibility line fixes where the approval goes.</strong> A read changes nothing. A write changes a record that can be changed back. A commit moves money, sends a letter, revokes a right; reversal is a new action with its own consequences. The approval a person gives belongs at the commit, not at the family: a generative system that publishes directly is a commit, an agent that only reads is not. The Model Context Protocol, the interface through which most agents reach their tools, states it as a principle: "hosts must obtain explicit user consent before invoking any tool", and adds that "MCP itself cannot enforce these security principles at the protocol level". Part 4 of the first series showed one way to enforce them per action; this series will only ask, for each family, which actions are commits.</p>
+  <p><strong>The freshness line decides which failure you will see.</strong> A system reasoning from a training run fails by drift: the world moved, the model did not, and the failure is silent until someone measures it. A system reasoning from an index fails by confidence: it answers about last quarter's policy in the present tense, with a citation. A system reasoning from live data fails in the system itself, immediately, and the record of the failure is the record of the action. The monitoring the first series described in part 5 is a different job on each line.</p>
+
+  <h2>Three jobs on the map</h2>
+  <p>The same job can be placed on several rows. That is the most useful thing the map does, because the placement, not the technology, is what the law and the platform respond to. Three organisations, none of them real, each with a job that moves.</p>
+</div>
+
+<div class="wide"><div class="tblbox"><table class="jobs"><colgroup><col style="width:21%"><col style="width:10%"><col style="width:11%"><col style="width:27%"><col style="width:31%"></colgroup>
+    <thead><tr><th>Job</th><th>Family, level</th><th>Worst action</th><th>What the platform must provide</th><th>Regulatory line</th></tr></thead>
+    <tbody>
+      <tr><td>A public agency assesses eligibility for a benefit. Placed as a score shown to a caseworker.</td><td>Predictive, 1</td><td>commit, by the caseworker</td><td>Model registry, drift monitoring, an inventory entry with a risk class (S1 part 3, 5).</td><td>Annex III 5(a) names systems used "to evaluate the eligibility of natural persons for essential public assistance benefits" as high-risk. Article 6(3) can lift that for a "narrow procedural task" or a "preparatory task", never where the system "performs profiling of natural persons". High-risk obligations apply from 2 December 2027.</td></tr>
+      <tr><td>The same agency. Placed as a copilot that drafts the decision letter from the case file.</td><td>Integrated copilot, 2</td><td>write; commit when the officer signs</td><td>The case-management tool's own permissions; a record of what the model proposed and what the officer changed (S1 part 5).</td><td>Same Annex III row: the text also covers systems used "to grant, reduce, revoke, or reclaim such benefits". Article 14(4)(b) on automation bias is the clause to design for. Article 50(1) if the letter is generated in a conversation with the applicant.</td></tr>
+      <tr><td>The same agency. Placed as an agent that grants, adjusts and notifies within rules.</td><td>AI agent, 4</td><td>commit</td><td>MCP gateway, agent identity, per-action policy, an approval surface, records kept six months (S1 parts 1, 4, 5).</td><td>Annex III 5(a), no exemption in reach. Article 14 in full: a person with authority to stop it. Article 21 FADP for a Swiss agency: a right to human review of the decision.</td></tr>
+      <tr><td>A bank scores credit applications. Placed as a score that decides automatically below a threshold.</td><td>Predictive, 4</td><td>commit</td><td>Model registry, performance and bias tests with metrics fixed in advance, an independent review, fallback (S1 part 3, FINMA 08/2024).</td><td>Annex III 5(b): "creditworthiness of natural persons", high-risk. The same point excludes systems "used for the purpose of detecting financial fraud": the fraud model next door, same technique, is not on the list.</td></tr>
+      <tr><td>The same bank answers customers about their own statements in a chat.</td><td>Answering on your documents, 2</td><td>read; a disclosure is the risk</td><td>Vector store access control tied to the customer's identity, citation of the passage used, an index refresh policy (S1 part 1, 5).</td><td>Not an Annex III row. Article 50(1), in force since 2 August 2026: the customer is told they are talking to an AI. FADP Articles 7 and 8 on protection by design and data security.</td></tr>
+      <tr><td>The same bank reconciles supplier invoices with an agent that posts matched entries.</td><td>AI agent, 3</td><td>write; commit at payment</td><td>Per-action policy with the payment step as the approval point, identity, records (S1 part 4).</td><td>Not an Annex III row. NIS2 Article 21(2) binds the bank as an entity: access control, supply chain, incident handling; the agent's tools and model are part of that supply chain.</td></tr>
+      <tr><td>A manufacturer predicts machine failures from sensor data. A planner schedules the maintenance.</td><td>Predictive, 1</td><td>read</td><td>Model registry, drift monitoring against live telemetry (S1 part 5, 6).</td><td>Outside Annex III. Annex I only if the model is a safety component of a regulated product, a definition Regulation 2026/1744 narrowed in July 2026.</td></tr>
+      <tr><td>The same manufacturer gives technicians an assistant over the maintenance manuals.</td><td>Answering on your documents, 2</td><td>read; a wrong procedure is the risk</td><td>Ingestion with document versions, citation of the manual page, index refresh on every revision (S1 part 5).</td><td>Outside Annex III. Product-safety and workplace rules apply to the procedure itself; the AI Act adds Article 50(1) disclosure.</td></tr>
+      <tr><td>The same manufacturer lets an agent order spare parts up to a ceiling.</td><td>AI agent, 4</td><td>commit</td><td>Per-action policy with the ceiling as a rule, approval above it, an audit record per order (S1 part 4).</td><td>Outside Annex III. NIS2 if the manufacturer is an essential or important entity. Contract law does the rest, which is why the ceiling is a rule and not a prompt.</td></tr>
+    </tbody>
+  </table></div></div>
+
+<div class="post">
+  <p>Read the table by column and the pattern is plain. The regulatory line depends on the job and its placement, not on the family: the same benefit assessment is high-risk at level 1 and at level 4, and the same predictive technique is high-risk for credit and unlisted for fraud. The platform column, on the other hand, depends almost entirely on the family. That split is the reason this series exists: the business reader can find their job in the first column and the lawyer's answer in the last; the platform reader can find the family and the layer it needs.</p>
+
+  <h2>What the map does not say</h2>
+  <p>It does not say which family is better. A level 1 model that has run a factory's maintenance for six years is not a lesser thing than an agent demo. It does not say what a family costs, in money or in people; the first series had a part on that and this one will not repeat it. It does not place any product: a vendor's "agent" is wherever its answers to the two questions put it, and the same product is often sold at one row and deployed at another. And it does not say that jobs stay put. The realistic path for an administration or a bank is not to replace a process with an agent but to let a model into one step of it, keep the engine in control, and move the step to an agent when the records show it is safe. That path is the augmented workflow row, and part 5 is about it.</p>
+  <p>One question carries into the next part. Two rows of the map contain no language model, run at level 1 most of the time, and can still reach level 4 with nobody noticing, because the wiring, not the model, moved them there. If a model that only emits a score can already sit where the oversight article bites, what exactly does the platform owe it? That is part 2.</p>
+
+  <div class="cta">
+    <strong>Next in the series</strong>
+    <ol class="series">
+      <li><span>Part 2</span>AI without a language model: prediction, recommendation, perception, optimisation. What already runs everywhere, what it asks of the platform, and why it is not "less" than the rest.</li>
+      <li><span>Part 3</span>Generating and assisting: generative AI, integrated copilots, small specialised models. The person reads, the risk is the content.</li>
+      <li><span>Part 4</span>Answering on your own documents: RAG, agentic RAG, graph RAG. The risk becomes access to sources, and freshness.</li>
+      <li><span>Part 5</span>Acting within a perimeter: the AI agent with its tools, and the augmented workflow as the migration path.</li>
+      <li><span>Part 6</span>Pursuing a goal with several agents: agentic AI, delegation, intent. The most demanding regime, and the one sold first.</li>
+    </ol>
+  </div>
+
+  <div class="notice">This article is an engineer's reading of public legal texts, checked against the versions and dates given below. It is not legal advice. For a real deployment, read the texts with counsel and with your supervisor's guidance for your sector.</div>
+
+  <div class="notice"><strong>Read, not run.</strong> Everything in this series comes from reading public documents and public code at a stated date, not from running them in production. Treat it as a map to test, not a result to trust: the texts are amended, the projects move monthly, and a placement that is right for one organisation's wiring is wrong for another's. Place your own jobs on the map with the people who own them. When something here does not match what you find, tell me, or better, tell the project or the authority concerned: that is the only way a map like this one stays true.</div>
+
+  <hr>
+  <div class="sources">
+    <strong>Sources</strong>
+    <ol>
+      <li>Regulation (EU) 2024/1689 (AI Act), Article 3(1), Article 6(2) and (3), Article 14, Article 50, Annex III point 5; texts read on <a href="https://artificialintelligenceact.eu/">artificialintelligenceact.eu</a> on 23 September 2026. Application dates as amended by Regulation (EU) 2026/1744, read in <a href="https://hokonoken.github.io/agent-stack-blueprint/part-3/">part 3 of the first series</a>.</li>
+      <li>Federal Act on Data Protection (FADP, SR 235.1), Fedlex, English translation, Articles 7, 8 and 21; Directive (EU) 2022/2555 (NIS2), Article 21(2); FINMA Guidance 08/2024, sections 2.2 to 2.7. All as read for part 3 of the first series, 22 September 2026.</li>
+      <li><a href="https://www.anthropic.com/research/building-effective-agents">Building effective agents</a>, Anthropic, 19 December 2024: the distinction between workflows, "where LLMs and tools are orchestrated through predefined code paths", and agents, "where LLMs dynamically direct their own processes and tool usage". The augmented-workflow and agent rows follow that line.</li>
+      <li><a href="https://modelcontextprotocol.io/specification/2025-06-18">Model Context Protocol specification</a>, revision 2025-06-18, section "Security and Trust &amp; Safety", read 23 September 2026.</li>
+      <li>SAE J3016_202104, Taxonomy and Definitions for Terms Related to Driving Automation Systems for On-Road Motor Vehicles, April 2021, used as an analogy only; its level definitions are not reproduced here.</li>
+      <li><a href="https://hokonoken.github.io/agent-stack-blueprint/">Agent stack blueprint</a>, the first series, parts 1, 3, 4 and 5, for the platform layers named in the last column of the map.</li>
+    </ol>
+    <p>Independent work, not affiliated with any regulator, standards body or vendor named. Not legal advice. Product names belong to their owners. Views are my own and do not represent the position of my employer. Text and diagrams: <a href="../LICENSE.md">CC BY 4.0</a>; quoted code and documents stay under their own licences.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

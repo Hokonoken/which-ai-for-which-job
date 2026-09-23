@@ -2,7 +2,7 @@
 
 Six articles on choosing the right kind of AI system for a given job, and on what each kind demands from the platform underneath it:
 
-1. The map: who decides, who acts, and the levels of autonomy
+1. [The map: who decides, who acts, and the levels of autonomy](part-1/)
 2. AI without a language model: prediction, recommendation, perception, optimisation
 3. Generating and assisting: generative AI, copilots, small specialised models
 4. Answering on your own documents: RAG, agentic RAG, graph RAG

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="author" content="Hokonoken">
+<meta name="description" content="Six articles on choosing the right kind of AI system for a job, sorted by who decides and who acts, and on what each kind demands from the platform underneath it.">
+<title>Which AI for Which Job</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#131A24; --muted:#5A6675; --line:#D5DBE3; --band:#E9EDF3;
+  --us:#C2410C; --cncf:#5B3FBF; --nv:#3F7D0B; --ms:#175CD3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+    --us:#FB923C; --cncf:#B39DFF; --nv:#86CB3C; --ms:#84ADFF;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+  --us:#FB923C; --cncf:#B39DFF; --nv:#86CB3C; --ms:#84ADFF;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15.5px;line-height:1.55;padding-inline:20px;padding-block:36px 64px}
+.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:34px}
+h1,h2{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,46px);font-weight:700;line-height:1.06;letter-spacing:-.01em}
+h2{font-size:22px;font-weight:600}
+p{margin:0}
+header{display:flex;flex-direction:column;gap:12px}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--us)}
+.lede{max-width:70ch;color:var(--muted)}
+.meta{font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+section{display:flex;flex-direction:column;gap:14px}
+.tblbox{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:14.5px}
+th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--band)}
+td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.n{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--us);white-space:nowrap;padding-top:14px}
+td.t b{font-weight:600;display:block}
+td.t span{color:var(--muted);font-size:13.5px}
+td.r{white-space:nowrap;color:var(--muted);font-variant-numeric:tabular-nums;font-size:13.5px}
+td.l{white-space:nowrap}
+a.btn{display:inline-block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.04em;color:var(--us);border:1px solid var(--us);border-radius:3px;padding:4px 10px;text-decoration:none}
+a.btn:hover,a.btn:focus-visible{background:var(--us);color:var(--surface);outline:none}
+.notice{font-size:13.5px;color:var(--muted);border:1px dashed var(--line);padding:12px 16px;max-width:80ch}
+.notice b{color:var(--ink);font-weight:600}
+footer{font-size:12.5px;color:var(--muted);max-width:80ch}
+@media (max-width:640px){body{font-size:15px}}
+.sn{max-width:76ch;margin:0 auto 18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.sn a{color:var(--us);text-decoration:none}
+.sn a:hover,.sn a:focus-visible{text-decoration:underline;outline:none}
+body{margin:0}
+
+/* larger type */
+body{font-size:17px}
+.lede{font-size:17.5px}
+.meta{font-size:14.5px}
+table{font-size:16px}
+th{font-size:12px}
+td.t span{font-size:15px}
+td.r{font-size:15px}
+a.btn{font-size:13px}
+.notice{font-size:15px}
+footer{font-size:14px}
+
+/* desktop scale: reads like a 130 % browser zoom, phones untouched */
+@media (min-width:641px){body{zoom:1.3}}
+</style>
+</head>
+<style>span.soon{display:inline-block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:13px;letter-spacing:.04em;color:var(--muted);border:1px dashed var(--line);border-radius:3px;padding:4px 10px}</style>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Which AI for which job · six parts</div>
+    <h1>Which AI for which job: the six-part map</h1>
+    <p class="lede">Six articles on choosing the kind of AI system a job calls for, sorted not by the name on the slide but by two questions: who decides, and who acts. Each part takes one family, places three generic jobs on it, names what the platform from <a href="https://hokonoken.github.io/agent-stack-blueprint/">the agent stack blueprint</a> has to provide, and quotes the article of law that applies. Read in order; the map in part 1 is the reference for all the others.</p>
+    <div class="meta"><span>Hokonoken</span><span>September 2026</span><span>English</span><span>Independent work, views are the author's own</span></div>
+  </header>
+
+  <section>
+    <h2>The six articles, in reading order</h2>
+    <div class="tblbox"><table>
+      <thead><tr><th>Part</th><th>Article</th><th>Reading</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr><td class="n">Part 1</td><td class="t"><b>The map: who decides, who acts, and how far the system goes on its own</b><span>Eight families sorted by two questions, a five-level autonomy scale, the worst action, the data's age, and the platform layer that carries the risk. Three jobs placed on the map, with the article of law for each placement.</span></td><td class="r">14 min</td><td class="l"><a class="btn" href="part-1/">Open</a></td></tr>
+        <tr><td class="n">Part 2</td><td class="t"><b>AI without a language model: prediction, recommendation, perception, optimisation</b><span>What already runs everywhere, what it asks of the platform, and why it is not "less" than the rest.</span></td><td class="r"></td><td class="l"><span class="soon">Coming</span></td></tr>
+        <tr><td class="n">Part 3</td><td class="t"><b>Generating and assisting: generative AI, integrated copilots, small specialised models</b><span>The person reads, the risk is the content.</span></td><td class="r"></td><td class="l"><span class="soon">Coming</span></td></tr>
+        <tr><td class="n">Part 4</td><td class="t"><b>Answering on your own documents: RAG, agentic RAG, graph RAG</b><span>The risk becomes access to sources, and freshness.</span></td><td class="r"></td><td class="l"><span class="soon">Coming</span></td></tr>
+        <tr><td class="n">Part 5</td><td class="t"><b>Acting within a perimeter: the AI agent and the augmented workflow</b><span>The risk becomes the action; everything the first series described applies. The augmented workflow as the migration path.</span></td><td class="r"></td><td class="l"><span class="soon">Coming</span></td></tr>
+        <tr><td class="n">Part 6</td><td class="t"><b>Pursuing a goal with several agents: agentic AI</b><span>Delegation, intent, the most demanding regime, and the one sold first.</span></td><td class="r"></td><td class="l"><span class="soon">Coming</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <div class="notice"><b>How to read these.</b> Every article is a reading of public documents and public code at a stated date, not something run in production. Each one ends with its sources and a note asking you to place your own jobs on the map with the people who own them, and to tell the project or the authority concerned when something does not match. Not legal advice.</div>
+
+  <footer>Independent work, not affiliated with any regulator, standards body or vendor named. Product names belong to their owners. Views are the author's own and do not represent the position of their employer. Text and diagrams: <a href="LICENSE.md">CC BY 4.0</a>; quoted code and documents stay under their own licences.</footer>
+</div>
+
+</body>
+</html>
