@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="author" content="Hokonoken">
+<meta name="description" content="Part 5 of Which AI for which job: acting within a perimeter. The AI agent with its tools and the augmented workflow as the migration path: the risk is the action, the perimeter is outside the model, and the read / write / commit label is yours to keep.">
+<title>Acting Within a Perimeter</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#131A24; --muted:#5A6675; --line:#D5DBE3; --band:#E9EDF3;
+  --rh:#B42318; --nv:#3F7D0B; --ms:#175CD3; --oss:#5A6675; --hot:#C2410C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+    --rh:#F97066; --nv:#86CB3C; --ms:#84ADFF; --oss:#94A1B2; --hot:#FB923C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+  --rh:#F97066; --nv:#86CB3C; --ms:#84ADFF; --oss:#94A1B2; --hot:#FB923C;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.55;padding-inline:20px;padding-block:32px 56px}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
+h1,h2,h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,4.6vw,44px);font-weight:700;line-height:1.06;letter-spacing:-.01em}
+h2{font-size:23px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:70ch;color:var(--muted);margin:0}
+header{display:flex;flex-direction:column;gap:12px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted);padding:12px 0;border-block:1px solid var(--line)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.sw{display:inline-block;width:22px;height:12px;border:2px solid var(--oss);background:var(--surface)}
+.sw.rh{border-color:var(--rh)} .sw.nv{border-color:var(--nv)} .sw.ms{border-color:var(--ms);border-style:dashed}
+figure{margin:0;display:flex;flex-direction:column;gap:12px}
+.svgbox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:10px}
+svg{display:block;min-width:1040px;width:100%;height:auto;color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif}
+svg .b rect{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .rh rect{stroke:var(--rh)} svg .nv rect{stroke:var(--nv)}
+svg .ms rect{stroke:var(--ms);stroke-dasharray:6 3}
+svg .t{font-size:13px;font-weight:600;fill:currentColor}
+svg .s{font-size:10.5px;fill:var(--muted)}
+svg .tag{font-size:9px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace}
+svg .trh{fill:var(--rh)} svg .tnv{fill:var(--nv)} svg .tms{fill:var(--ms)} svg .toss{fill:var(--oss)}
+svg .frame{fill:var(--band);stroke:var(--line);stroke-width:1}
+svg .pod{fill:none;stroke:var(--nv);stroke-width:1.6;stroke-dasharray:7 4}
+svg .agt{fill:none;stroke:var(--ms);stroke-width:1.4;stroke-dasharray:6 3}
+svg .cap{font-size:10.5px;letter-spacing:.07em;font-weight:600}
+svg .lbl{font-size:10.5px;fill:var(--muted)}
+svg .flow{fill:none;stroke:currentColor;stroke-width:1.3}
+svg .msflow{fill:none;stroke:var(--ms);stroke-width:1.4;stroke-dasharray:5 3}
+svg .tr{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:2 4}
+svg .mfill{fill:var(--ms)} svg .tfill{fill:var(--muted)}
+svg .bar rect{fill:var(--band);stroke:var(--line)}
+svg .mat{font-size:9px;font-style:italic;fill:var(--muted)}
+svg .svc{fill:none;stroke:var(--line);stroke-width:1.6;stroke-dasharray:3 3}
+svg .hotn rect{fill:var(--surface);stroke:var(--hot);stroke-width:2.4}
+figcaption a{color:var(--hot)}
+svg a{cursor:pointer}
+.tblbox{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:800px;font-size:13.5px}
+th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:10px;border-bottom:1px solid var(--line);background:var(--band)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600;white-space:nowrap}
+td code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px}
+svg .blue rect{fill:var(--surface);stroke:var(--ms);stroke-width:1.8}
+svg .green rect{fill:var(--surface);stroke:var(--nv);stroke-width:1.8}
+svg .tblue{fill:var(--ms)} svg .tgreen{fill:var(--nv)}
+svg .wflow{fill:none;stroke:var(--nv);stroke-width:2.2}
+svg .wflow2{fill:none;stroke:var(--ms);stroke-width:2.2}
+svg .shadow{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 3}
+svg .gate rect{fill:var(--band);stroke:var(--hot);stroke-width:1.6}
+svg .hott{fill:var(--hot)}
+.sw.hot{border-color:var(--hot);border-width:3px}
+svg .ghost rect{fill:var(--surface);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3}
+figcaption{max-width:78ch;color:var(--muted);font-size:14px}
+ol.steps{margin:0;padding-left:22px;max-width:78ch;display:flex;flex-direction:column;gap:8px}
+ol.steps li::marker{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));border:1px solid var(--line);background:var(--surface)}
+.col{padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.col h3{display:flex;align-items:center;gap:10px}
+.col ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.col code,.q code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere}
+.q{border-left:3px solid var(--rh);padding:6px 14px;max-width:78ch;display:flex;flex-direction:column;gap:6px}
+.q blockquote{margin:0;font-size:16px}
+.q span{font-size:13px;color:var(--muted)}
+footer{font-size:12.5px;color:var(--muted);max-width:88ch}
+section{display:flex;flex-direction:column;gap:14px}
+
+.post{max-width:76ch;margin:0 auto;display:flex;flex-direction:column;gap:22px;font-size:16.5px;line-height:1.6}
+.post h1{font-size:clamp(30px,5vw,46px)}
+.post h2{margin-top:10px}
+.post p{margin:0}
+.post ul,.post ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.meta{font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--hot)}
+.takeaways{border:1px solid var(--line);background:var(--surface);padding:18px 22px;display:flex;flex-direction:column;gap:10px}
+.takeaways h3{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.takeaways ol{font-size:15.5px}
+.quote{border-left:3px solid var(--rh);padding:8px 18px;display:flex;flex-direction:column;gap:8px}
+.quote blockquote{margin:0;font-size:18px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:500}
+.quote span{font-size:13.5px;color:var(--muted)}
+.cta{border:2px solid var(--hot);padding:18px 22px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.cta strong{color:var(--hot)}
+.series{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
+.series li{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:baseline}
+.series li span a{color:inherit;text-decoration:none}
+.series li span a:hover{text-decoration:underline}
+.series li span{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--hot);white-space:nowrap}
+.fig{display:flex;flex-direction:column;gap:10px}
+.fig .svgbox{padding:8px}
+.fig figcaption{font-size:13.5px}
+.wide{max-width:1600px;margin:0 auto;width:100%}
+.sources{font-size:13.5px;color:var(--muted)}
+.sources ol{gap:4px}
+.sources a{color:inherit}
+hr{border:0;border-top:1px solid var(--line);margin:8px 0}
+.notice{font-size:13.5px;color:var(--muted);border:1px dashed var(--line);padding:10px 14px}
+.sn{max-width:76ch;margin:0 auto 18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.sn a{color:var(--us);text-decoration:none}
+.sn a:hover,.sn a:focus-visible{text-decoration:underline;outline:none}
+body{margin:0}
+
+/* larger type */
+.post{font-size:18px;line-height:1.65}
+.takeaways ol{font-size:17px}
+.meta{font-size:14.5px}
+.kicker{font-size:13px}
+figcaption,.fig figcaption{font-size:15px}
+.fig figcaption,figure figcaption{max-width:110ch;width:100%;margin:0;padding-inline:0;text-align:left}
+table,table.repl{font-size:15px}
+th{font-size:12px}
+pre.cfg{font-size:13.5px;line-height:1.6}
+.cfgblock .src{font-size:12.5px}
+.cfgblock .note{font-size:15px}
+.cfgblock > strong{font-size:16px}
+.notice{font-size:15px}
+.sources{font-size:15px}
+.rules p,.cv p,.law p,.law ul{font-size:15.5px}
+.rules h3,.cv h3{font-size:17.5px}
+.law h3{font-size:17px}
+.law .when{font-size:12.5px}
+.series{font-size:16.5px}
+.sn{font-size:13px}
+
+/* desktop scale: reads like a 130 % browser zoom, phones untouched */
+@media (min-width:641px){body{zoom:1.3}}
+
+/* series 2: matrix figure */
+svg .hd{font-size:10.5px;letter-spacing:.07em;font-weight:600;fill:var(--muted)}
+svg .fam{font-size:13.5px;font-weight:600;fill:currentColor}
+svg .sub{font-size:10.5px;fill:var(--muted)}
+svg .cell{font-size:11.5px;fill:currentColor}
+svg .rowline{stroke:var(--line);stroke-width:1}
+svg .band{fill:var(--band)}
+svg .lvl{fill:var(--surface);stroke:var(--line);stroke-width:1}
+svg .lvl.on{stroke:none}
+svg .g1 .lvl.on{fill:var(--oss)} svg .g2 .lvl.on{fill:var(--nv)} svg .g3 .lvl.on{fill:var(--ms)} svg .g4 .lvl.on{fill:var(--hot)}
+svg .g1 .bar{fill:var(--oss)} svg .g2 .bar{fill:var(--nv)} svg .g3 .bar{fill:var(--ms)} svg .g4 .bar{fill:var(--hot)}
+svg .badge{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500}
+svg .bread rect{fill:var(--surface);stroke:var(--oss);stroke-width:1.2} svg .bread text{fill:var(--oss)}
+svg .bwrite rect{fill:var(--surface);stroke:var(--ms);stroke-width:1.2} svg .bwrite text{fill:var(--ms)}
+svg .bcommit rect{fill:var(--surface);stroke:var(--hot);stroke-width:1.8} svg .bcommit text{fill:var(--hot)}
+svg .ref{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;fill:var(--muted)}
+.sw.g1{border-color:var(--oss);background:var(--oss)} .sw.g2{border-color:var(--nv);background:var(--nv)} .sw.g3{border-color:var(--ms);background:var(--ms)} .sw.g4{border-color:var(--hot);background:var(--hot)}
+.legend{max-width:1600px;margin:0 auto;width:100%}
+table.jobs{table-layout:fixed;min-width:960px}
+.wide + .post,.fig + .post{margin-top:26px}
+.post + .wide{margin-top:14px}
+table.jobs td:first-child{white-space:normal;font-weight:400}
+table.jobs td,table.jobs th{white-space:normal}
+.lvls{border:1px solid var(--line);background:var(--surface);padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 18px;font-size:15px}
+.lvls div{display:flex;flex-direction:column;gap:2px}
+.lvls b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;color:var(--hot)}
+
+/* part 2 figure */
+svg .g1 rect.box{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .hotbox rect.box{fill:var(--surface);stroke:var(--hot);stroke-width:2.2}
+svg .bluebox rect.box{fill:var(--surface);stroke:var(--ms);stroke-width:1.6}
+svg .greybox rect.box{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .art{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;fill:var(--hot)}
+svg .note{font-size:11.5px;fill:var(--muted)}
+svg .lv{font-size:9.5px;letter-spacing:.08em;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;fill:currentColor}
+
+/* part 3 figure */
+svg .greenbox rect.box{fill:var(--surface);stroke:var(--nv);stroke-width:1.6}
+svg .colhd{font-size:13.5px;font-weight:600;fill:currentColor}
+svg .yield{font-size:11px;font-weight:600;fill:var(--hot)}
+svg .tnv{fill:var(--nv)}
+</style>
+</head>
+<body>
+<nav class="sn"><a href="../part-4/">&larr; Part 4</a><a href="../">The series</a><a href="../part-6/">Part 6 &rarr;</a></nav>
+<div class="post">
+  <span class="kicker">Which AI for which job · part 5 of 6</span>
+  <h1>Acting within a perimeter: the AI agent with its tools, and the augmented workflow as the migration path</h1>
+  <p class="lede">Part 4 ended on a question: when the worst action is no longer a disclosure but a change in a system, what has to be true before the model is allowed to make it? This row is where a language model's output is an action and a system carries it out. Two ways to build it: in the augmented workflow, an engine decides the path and a model fills one step of it; in the AI agent, the model decides the path, inside a perimeter that someone else drew. Everything the first series built exists for this row. What the row adds is the one thing that series did not have to decide: which actions a model may choose, and where a person stands.</p>
+  <div class="meta"><span>Hokonoken</span><span>September 2026</span><span>Reading time: 20 min</span><span>Not legal advice · Views are my own, not my employer's</span></div>
+
+  <div class="takeaways">
+    <h3>Three things to take away</h3>
+    <ol>
+      <li><strong>The perimeter is not the prompt.</strong> A perimeter is a list of tools, an identity, a policy per action, an approval at the commit and a record of every call, all outside the model. OWASP's 2025 list names the failure "Excessive Agency" and gives it three causes: excessive functionality, excessive permissions, excessive autonomy. An instruction in the prompt addresses none of them.</li>
+      <li><strong>The augmented workflow is the migration path.</strong> Anthropic's 2024 line separates workflows, "where LLMs and tools are orchestrated through predefined code paths", from agents, "where LLMs dynamically direct their own processes and tool usage". Most of what is sold to an administration or a bank as an agent in 2026 is a workflow with one model step, and that is the right place to start: the engine keeps the path, the record and the retry, and the model cannot reach a tool the step does not offer.</li>
+      <li><strong>Read, write, commit is a label you keep, not one you receive.</strong> The Model Context Protocol lets a tool describe itself as read-only, destructive or idempotent, defaults to destructive, and says clients "MUST consider tool annotations to be untrusted unless they come from trusted servers". The classification that decides where the approval goes is made at your gateway, per tool, by you. And the approval belongs at the commit.</li>
+    </ol>
+  </div>
+
+  <h2>What changed since part 4</h2>
+  <p>Agentic RAG was already an agent: it chose what to fetch, went through a tool gateway, ran as the user, and every query was recorded, so that a read would stay a read. This row lets the same machinery write. One thing does not change: the model has no permissions of its own. It inherits them, from the person it acts for and from the identity the platform gave it, and can do nothing the perimeter does not offer. This whole row rests on that sentence.</p>
+  <p>Two things change. The worst action is now a change in a system that will act on it: a record in the case system becomes a decision the next process reads, a payment posted is money moved. A write can be undone by another write. A commit cannot be quietly undone: reversal is a new action, with its own consequences and its own approval. That is why the map places a job at level 3 or 4 by where the commit sits, not by which family the vendor named. And there may be no person reading. In every previous row a person read the output before anything happened, and that reading was the control. Here the output is the action, and if the design puts the person after it, the record is the only witness.</p>
+  <p>OWASP's mitigations for "Excessive Agency" are the perimeter, item by item: "minimize extensions", "minimize extension permissions", "execute extensions in user's context", "require user approval", "complete mediation". The same page adds that logging and rate limits "can help limit damage but won't prevent the vulnerability". A record tells you what happened. It does not stop it.</p>
+
+  <h2>Two ways to let a model act</h2>
+  <p><strong>The augmented workflow.</strong> A process engine, a BPM tool, a durable-execution runtime, or the robotic process automation many administrations already run, keeps the path: which step follows which, what is retried, what is compensated. One step, sometimes two, calls a model. The step is a function: it takes a document or a record and returns a typed result, extracted fields, a class, a draft, which the engine validates against a schema before it decides the next step. The model never sees a tool. It cannot reach the case system, the ledger or the mailbox, because the step does not offer them. The person stays where the process already put them, at the approval step, and the record is the engine's.</p>
+  <p>That is why this row is the migration path. One step changes, nothing else does, and the engine's own records show, before anyone moves the step to an agent, how often the model's output was accepted, corrected or rejected. Anthropic's 2024 note lists five workflow patterns, "prompt chaining", "routing", "parallelization", "orchestrator-workers" and "evaluator-optimizer", and every one is a path decided in code; only the fourth becomes something else, when the workers are given tools, and that is part 6. The engines are older than the models, which is their merit: Temporal, MIT, v1.32.0 of 11 September 2026; Argo Workflows, Apache-2.0, v4.1.4 of 18 September 2026, already in the first series; Robot Framework, Apache-2.0, v7.5 of 14 September 2026, for the RPA case where the "tool" is a screen. None of them knows what a language model is.</p>
+  <p><strong>The AI agent.</strong> The same note describes the other case: "open-ended problems where it's difficult or impossible to predict the required number of steps", where the model runs a loop, picks a tool, reads the result, and continues until a stopping condition. It is plain about the price: agents require "some level of trust in its decision-making", and are to be run with "checkpoints" and "stopping conditions". The path is now the model's. What replaces the engine is a perimeter, outside the model, that says which tools exist, who the agent is, what each action may do, when a person must say yes, and what is written down.</p>
+  <p>The protocol most agents use to reach their tools has said the same since part 1 quoted it, and the current revision, 2026-07-28, keeps the sentences unchanged: tools are "model-controlled"; "there SHOULD always be a human in the loop with the ability to deny tool invocations"; and "MCP itself cannot enforce these security principles at the protocol level". The revision made the protocol stateless and moved long-running tasks into an extension; the state that matters here, the budget, the stop, the approval, lives in your runtime and your gateway.</p>
+</div>
+
+<figure class="fig wide">
+  <div class="svgbox">
+<svg viewBox="0 0 1280 640" role="img" aria-label="Two bands. Top: the augmented workflow, where the engine decides the path. A trigger starts a run; step one is a rule; step two is the only model step, called as a function with a typed, validated output; step three is a rule; an approval by a person sits before the commit into the system of record. Bottom: the AI agent, where the model decides the path inside a perimeter. A task with the person's identity reaches the agent loop; every tool call goes through the tool gateway, which checks identity, allowlist, policy per action, holds the call for approval when it is a commit, and writes one log entry; the tools are labelled read, write or commit at the gateway, because the protocol says a tool's own annotations are untrusted; a person with authority can deny a call, reverse it, or stop the loop.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--hot)"/></marker><marker id="am" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker></defs>
+<rect class="frame" x="20" y="20" width="1240" height="230"/>
+<text class="cap" x="32" y="42" fill="currentColor">AUGMENTED WORKFLOW · THE ENGINE DECIDES THE PATH</text>
+<g class="greybox"><rect class="box" x="30" y="62" width="150" height="84"/><text class="t" x="40" y="86">Trigger</text><text class="s" x="40" y="104">a case, an invoice, a mail</text><text class="ref" x="40" y="134">ENGINE STARTS A RUN</text></g>
+<path class="flow" marker-end="url(#a)" d="M180 104 L200 104"/>
+<g class="greybox"><rect class="box" x="200" y="62" width="170" height="84"/><text class="t" x="210" y="86">Step 1 · rule</text><text class="s" x="210" y="104">fetch, validate, route</text><text class="ref" x="210" y="134">DETERMINISTIC</text></g>
+<path class="flow" marker-end="url(#a)" d="M370 104 L390 104"/>
+<g class="greenbox"><rect class="box" x="390" y="62" width="240" height="84"/><text class="t" x="400" y="86">Step 2 · the model step</text><text class="s" x="400" y="104">extract, classify, draft: a function</text><text class="ref" x="400" y="134">TYPED OUTPUT · VALIDATED · PART 3</text></g>
+<path class="flow" marker-end="url(#a)" d="M630 104 L650 104"/>
+<g class="greybox"><rect class="box" x="650" y="62" width="150" height="84"/><text class="t" x="660" y="86">Step 3 · rule</text><text class="s" x="660" y="104">threshold, four eyes</text><text class="ref" x="660" y="134">DETERMINISTIC</text></g>
+<path class="flow" marker-end="url(#a)" d="M800 104 L820 104"/>
+<g class="gate"><rect x="820" y="62" width="170" height="84" rx="2"/><text class="t" x="830" y="86">Approval</text><text class="s" x="830" y="104">a person, before the commit</text><text class="art" x="830" y="134">ART. 14(4)(D) · LEVEL 3</text></g>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8" marker-end="url(#ah)" d="M990 104 L1020 104"/>
+<g class="hotbox"><rect class="box" x="1020" y="62" width="230" height="84"/><text class="t" x="1030" y="86">System of record</text><text class="s" x="1030" y="104">post, notify, pay</text><text class="lv" x="1030" y="134">LEVEL 4 IF A RULE APPROVES</text></g>
+<g class="bcommit"><rect x="1182" y="70" width="58" height="22" rx="3"/><text class="badge" x="1211.0" y="85" text-anchor="middle">COMMIT</text></g>
+<text class="note" x="30" y="176">The model never sees a tool. The engine calls it as a function with a schema, checks the result against the schema, and decides the next step itself.</text>
+<text class="note" x="30" y="194">Retry, timeout, compensation and the record belong to the engine, which is why this row is the migration path: one step of the process changes, nothing else does.</text>
+<text class="note" x="30" y="212">Level 3 while a person approves the commit; level 4 the day a rule does. The gate of the first series reruns on every change of the model step.</text>
+<text class="ref" x="30" y="236">S1 · PART 5 (RECORDS) · PART 6 (ROLLOUT OF THE MODEL STEP) · ENGINES: TEMPORAL, ARGO WORKFLOWS; RPA: ROBOT FRAMEWORK</text>
+<rect class="frame" x="20" y="270" width="1240" height="350"/>
+<text class="cap" x="32" y="292" fill="currentColor">AI AGENT · THE MODEL DECIDES THE PATH, INSIDE A PERIMETER SOMEONE ELSE DREW</text>
+<g class="greybox"><rect class="box" x="30" y="392" width="180" height="84"/><text class="t" x="40" y="416">A task</text><text class="s" x="40" y="434">from a person or a queue,</text><text class="ref" x="40" y="464">IDENTITY TRAVELS</text></g>
+<text class="s" x="40" y="450">with the person's identity</text>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8" marker-end="url(#ah)" d="M210 434 L240 434"/>
+<g class="hotbox"><rect class="box" x="240" y="372" width="240" height="124"/><text class="t" x="252" y="396">The agent</text><text class="s" x="252" y="414">a loop: think, pick a tool, read the</text><text class="s" x="252" y="430">result, repeat until a stopping condition</text><text class="lv" x="252" y="456">LEVEL 3 · 4</text><text class="ref" x="252" y="484">OWN IDENTITY · BUDGET · A STOP</text></g>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8" marker-end="url(#ah)" d="M480 420 L520 420"/>
+<path class="tr" marker-end="url(#am)" d="M520 448 L482 448"/>
+<g class="gate"><rect x="520" y="312" width="300" height="220" rx="2"/><text class="t" x="532" y="336">Tool gateway</text><text class="s" x="532" y="354">the perimeter, outside the model</text></g>
+<text class="note" x="532" y="378">identity checked: the agent&#x27;s, the person&#x27;s</text>
+<text class="note" x="532" y="396">allowlist: the agent sees nothing else</text>
+<text class="note" x="532" y="414">policy per action: ceiling, scope, four eyes</text>
+<text class="note" x="532" y="432">a commit is held; digest of the exact call</text>
+<text class="note" x="532" y="450">one log entry per call: who, what, result</text>
+<text class="ref" x="532" y="486">S1 · PART 1 · PART 4 · PART 5</text>
+<text class="art" x="532" y="518">MCP · EXPLICIT USER CONSENT BEFORE ANY TOOL</text>
+<g class="bread"><rect x="860" y="318" width="200" height="66" rx="3"/><text class="t" x="870" y="340" style="fill:currentColor">Read a record</text><text class="s" x="870" y="358">readOnlyHint: true</text></g>
+<g class="bread"><rect x="992" y="326" width="60" height="22" rx="3"/><text class="badge" x="1022.0" y="341" text-anchor="middle">READ</text></g>
+<path class="flow" marker-end="url(#a)" d="M820 351 L858 351"/>
+<text class="note" x="1072" y="344">nothing changes;</text>
+<text class="note" x="1072" y="360">part 4 governed it</text>
+<g class="bwrite"><rect x="860" y="400" width="200" height="66" rx="3"/><text class="t" x="870" y="422" style="fill:currentColor">Write a record</text><text class="s" x="870" y="440">not destructive · idempotent</text></g>
+<g class="bwrite"><rect x="992" y="408" width="60" height="22" rx="3"/><text class="badge" x="1022.0" y="423" text-anchor="middle">WRITE</text></g>
+<path class="flow" marker-end="url(#a)" d="M820 433 L858 433"/>
+<text class="note" x="1072" y="426">another write undoes it;</text>
+<text class="note" x="1072" y="442">safe to retry</text>
+<g class="bcommit"><rect x="860" y="482" width="200" height="66" rx="3"/><text class="t" x="870" y="504" style="fill:currentColor">Commit</text><text class="s" x="870" y="522">pay, send, revoke, open world</text></g>
+<g class="bcommit"><rect x="992" y="490" width="60" height="22" rx="3"/><text class="badge" x="1022.0" y="505" text-anchor="middle">COMMIT</text></g>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8" marker-end="url(#ah)" d="M820 515 L858 515"/>
+<text class="note" x="1072" y="508">reversal is a new action,</text>
+<text class="note" x="1072" y="524">with its own approval</text>
+<text class="note" x="860" y="572">The label is yours. The protocol lets a tool describe itself,</text>
+<text class="note" x="860" y="588">defaults to destructive, then says clients "MUST consider tool</text>
+<text class="note" x="860" y="604">annotations to be untrusted unless they come from trusted servers".</text>
+<g class="hotbox"><rect class="box" x="240" y="526" width="240" height="66"/><text class="t" x="252" y="550">The person with authority</text><text class="s" x="252" y="568">can deny, reverse, or stop the loop</text><text class="art" x="252" y="584">ART. 14(4)(D)(E) · 26(2)</text></g>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8;stroke-dasharray:6 4" marker-end="url(#ah)" d="M480 556 L730 556 L730 534"/>
+<text class="lbl" x="500" y="548">approve or deny, at the commit</text>
+<text class="ref" x="30" y="612">LEVELS FROM PART 1: 3 ACTS UNDER APPROVAL · 4 ACTS, REVIEWED AFTER</text>
+</svg>
+  </div>
+  <div class="legend"><span><i class="sw g1"></i>the engine, deterministic</span><span><i class="sw g2"></i>the model step, a function</span><span><i class="sw hot"></i>the agent, the commit, and the person who can stop it</span><span>Levels from part 1: 3 acts under approval · 4 acts, reviewed after</span></div>
+  <figcaption>Top: the augmented workflow. The engine decides the path; the model fills one step and returns a typed value; the approval sits where the process always had it, before the commit. Bottom: the AI agent. The model decides the path, and every tool call crosses the gateway, which is the perimeter: identity, allowlist, policy per action, a hold at the commit, one log entry per call. The three tools carry the label the gateway gave them, not the one the server claims.</figcaption>
+</figure>
+
+<div class="post">
+  <h2>The perimeter, in five parts</h2>
+  <p>Each part is a control the first series built. What this row adds is the reason it is there.</p>
+  <p><strong>The list of tools.</strong> The agent sees the tools on its allowlist and nothing else. The current protocol revision notes that a server's tool list "MAY vary by the authorization presented on the request"; that is the server's half. The gateway's half is the allowlist per agent that the first series placed in front of every MCP server. An agent cannot misuse a tool it was never shown.</p>
+  <p><strong>Identity, twice.</strong> The agent has an identity of its own, a workload identity from SPIRE in the first series, and it acts for a person whose identity travels with the task. The gateway checks both. A shared service account is the failure this prevents: the record then says "the agent" wrote the record, and the auditor's question, which agent, for whom, has no answer.</p>
+  <p><strong>A policy per action.</strong> The ceiling is a rule, not a prompt; part 1 said it for the spare-parts agent and this is the mechanism. The gateway evaluates a policy on every call, with the tool, the arguments and both identities as input, and returns allow, deny or hold. The first series showed two ways: a policy engine at the gateway, OPA, Apache-2.0, v1.20.2 of 3 September 2026, and Microsoft's Agent Governance Toolkit, MIT, whose manifest lists the actions that go to a person before execution and bounds arguments by schema, a maximum amount on a transfer, for instance. The toolkit's detail that matters most here: an approval must echo the digest of the exact action, or it counts as a denial.</p>
+  <p><strong>An approval at the commit.</strong> Not at the family, not at the session, at the commit. The person who gives it needs, in the words of Article 26(2), "the necessary competence, training and authority", and must see the exact action, its arguments and its target. Article 14(4)(b)'s "automation bias" applies to approvals as much as to proposals: an agent that asks fifty times an hour is approved by habit, and the toolkit's fatigue threshold exists for that. The hold itself needs a place to live: the first series found it missing in one gateway's design document and present in the toolkit's runtime. It is a component you choose, not a property of the protocol.</p>
+  <p><strong>A record per call.</strong> The gateway writes one entry per tool call, with the caller, the tool, the server, the status and a request id, as the first series described; the current protocol revision documents how the trace context travels in the call's metadata, so the call joins the trace of the turn that caused it. Article 12(1) asks that a high-risk system "technically allow for the automatic recording of events (logs) over the lifetime of the system"; Article 26(6) asks the deployer to keep them at least six months. For a system that acts, the log is also the reversal path.</p>
+
+  <h2>Read, write, commit: the labels</h2>
+  <p>Part 1 gave the reversibility axis three values. The protocol gives a tool four ways to describe itself, and the defaults are worth reading: a tool that says nothing about itself is, by default, not read-only, "may perform destructive updates to its environment", is not idempotent, and "may interact with an 'open world' of external entities". Assume the worst, chosen on purpose. Then the specification takes the description away from you: "clients MUST consider tool annotations to be untrusted unless they come from trusted servers". A tool that calls itself read-only is a claim, made by the server, about itself. So the classification the map needs is made by you, at the gateway, per tool, from what the tool actually does. A tool you have verified changes nothing is a read. A tool whose changes another tool can undo, and which is safe to retry, is a write. A tool that pays, sends, revokes, or reaches outside, mail, a payment network, the web, is a commit, because what leaves cannot be recalled. Article 14(4)(d) asks that the person can "reverse the output"; for a commit, that means the reversal tool is on the list too, with its own policy, or the clause has no mechanism behind it.</p>
+
+  <h2>What the platform owes them</h2>
+  <p>Take part 4's platform, whose gateway, identity and record were built for a read, and give them a write to govern.</p>
+  <ul>
+    <li><strong>The tool gateway, with its policy and its hold.</strong> Kuadrant's MCP gateway on Envoy, Apache-2.0, v0.9.0 of 14 August 2026, with Authorino, v0.28.0 of 22 September 2026, for the identity check per tool and server. OPA for the policy per action. The Agent Governance Toolkit for the manifest of held actions, the argument bounds and the digest-echoing approval: latest release v4.1.0 of 9 June 2026, tag v5.0.0 of 27 July 2026. Whichever combination, the gateway is where the read / write / commit label lives.</li>
+    <li><strong>Two identities.</strong> Keycloak, 26.7.4 of 16 September 2026, for the person; SPIRE, v1.15.3 of 21 August 2026, for the agent. Every log entry names both.</li>
+    <li><strong>An engine for the workflow case.</strong> Temporal, Argo Workflows, or the RPA runtime you already have; the model step behind the model gateway of part 3, its output schema-checked by the engine.</li>
+    <li><strong>A runtime for the agent case, with a budget and a stop.</strong> A budget of actions, time and money as rules the runtime enforces. A stop the person can press that ends the loop and every call in flight. The first series ran agent code in a sandbox, NVIDIA's OpenShell, Apache-2.0, v0.0.116 of 28 August 2026, so that what the agent does beyond its tool calls is recorded too.</li>
+    <li><strong>A gate that scores actions.</strong> A set of tasks with the expected tool calls, and a gate that scores which tools the agent called, with which arguments, in which order, and whether it stopped. It reruns on every change to the model, the prompt, the tool list or a tool's description, because a tool's description is part of the prompt.</li>
+    <li><strong>The record, kept.</strong> The gateway log and the trace, under the six months of Article 26(6) where the system is high-risk, and under the data-protection decision from part 3 either way: the log of an agent that writes to a case file is a record about the person in that file.</li>
+  </ul>
+
+  <h2>Where the law reaches this row</h2>
+  <p><strong>Through Article 14, in full.</strong> Every earlier row met the oversight article by having a person read the output. This row meets it, or fails to, with product features. Paragraph 1 asks that a high-risk system "can be effectively overseen by natural persons during the period in which they are in use". Paragraph 4 lists what the person must be able to do: understand its "capacities and limitations" and "detect anomalies"; interpret the output; "disregard, override or reverse the output"; "intervene in the operation" or "interrupt the system through a 'stop' button or a similar procedure". For an agent at level 4 those verbs are a hold, a reversal tool, a stop and a log, and they either exist or they do not. Paragraph 3 says the measures are built in by the provider or identified by the provider for the deployer, and Article 25(1) makes a deployer the provider when it substantially modifies a high-risk system or changes a system's purpose so that it becomes one. On that reading, an agent assembled in-house from a model, a gateway and tools, doing an Annex III job, has for provider the organisation that wired it. Counsel should confirm that before anyone relies on it.</p>
+  <p><strong>Through the deployer's obligations.</strong> Article 26 asks the deployer to "assign human oversight to natural persons who have the necessary competence, training and authority", to "monitor the operation", to keep the logs, and, in paragraph 11, to "inform the natural persons that they are subject to the use of the high-risk AI system". Each maps to a component above; the first maps to a job description.</p>
+  <p><strong>Through incident reporting.</strong> Article 73 asks providers to report a serious incident "not later than 15 days" after becoming aware of it, two days for the widespread cases. Article 3(49) defines one as leading, among other things, to "the infringement of obligations under Union law intended to protect fundamental rights". An agent that wrongly revokes a benefit, at scale, before anyone reads the log, is not far from that definition. The report will be written from the record.</p>
+  <p><strong>Through data protection at level 4.</strong> GDPR Article 22 and Article 21 of the Swiss FADP apply where the agent's commit is a decision about a person with legal or similar effect, taken without a person. The level, not the family, triggers them.</p>
+  <p><strong>Through security law and the job.</strong> NIS2 Article 21(2) asks for access control and supply-chain security; the tools an agent calls and the servers that expose them are suppliers, and the gateway's allowlist is the access-control policy the article has in mind. The Swiss financial regulator's guidance asks that results can be "understood, explained or reproduced", as read in the first series; for an agent, that is the record. And nothing in Annex III says "agent": the row inherits the risk class of the task.</p>
+
+  <h2>Three organisations, nine jobs</h2>
+  <p>The same three organisations; three of the jobs are the ones part 1 placed on this row. Each is placed by who decides the path and where the commit sits.</p>
+</div>
+
+<div class="wide"><div class="tblbox"><table class="jobs"><colgroup><col style="width:21%"><col style="width:10%"><col style="width:11%"><col style="width:27%"><col style="width:31%"></colgroup>
+    <thead><tr><th>Job</th><th>Family, level</th><th>Worst action</th><th>What the platform must provide</th><th>Regulatory line</th></tr></thead>
+    <tbody>
+      <tr><td>A public agency renews a recurring benefit: a workflow extracts the figures from the new income document, checks them against the rules, and a caseworker approves the renewal letter.</td><td>Augmented workflow, 3</td><td>commit, by the caseworker</td><td>The engine owns the path and the record; the model step returns typed fields the engine validates; the letter comes from a template; the gate reruns on every change of the model step.</td><td>Annex III 5(a): systems used "to grant, reduce, revoke, or reclaim" benefits. Article 14(4)(b) on automation bias for the caseworker. Article 21 FADP not triggered while a person decides.</td></tr>
+      <tr><td>The same agency gives caseworkers an assistant that updates a case file on request: an address, a document, a note, each change shown before it runs.</td><td>AI agent, 3</td><td>write; a wrong record the next process reads</td><td>Tools limited to the case system's write API for the open case; runs as the caseworker; each write held and shown with its arguments; one log entry per call, kept with the case.</td><td>Not Annex III unless the record feeds an eligibility decision. GDPR Article 5(1)(d) accuracy. FADP Articles 7 and 8.</td></tr>
+      <tr><td>The same agency, as in part 1: an agent that grants, adjusts and notifies within rules.</td><td>AI agent, 4</td><td>commit: a benefit revoked, a letter sent</td><td>MCP gateway, agent identity, per-action policy with the thresholds as rules, an approval surface above them, a reversal tool on the list, a stop, records kept six months.</td><td>Annex III 5(a), no exemption in reach. Article 14 in full. Article 26(2) and (11). Article 21 FADP. Article 73 if a wrong revocation meets Article 3(49).</td></tr>
+      <tr><td>A bank opens accounts: a workflow extracts the identity documents with a model step, rules run the checks, and a compliance officer approves the opening.</td><td>Augmented workflow, 3</td><td>commit, by the officer</td><td>Engine-owned path; extraction validated against a schema; the officer sees the extracted values next to the document; the model step behind the model gateway with its own gate.</td><td>Anti-money-laundering rules govern the checks. Not Annex III 5(b), which is about creditworthiness. FINMA 08/2024 inventory.</td></tr>
+      <tr><td>The same bank, as in part 1: an agent that reconciles supplier invoices and posts matched entries, with the payment as the commit.</td><td>AI agent, 3</td><td>write; commit at payment</td><td>Per-action policy with the payment step as the hold; the posting tool labelled write, reversible by a counter-entry; identity; one record per call.</td><td>Not Annex III. NIS2 Article 21(2): the tools and the model are in the bank's supply chain. FINMA: results "understood, explained or reproduced".</td></tr>
+      <tr><td>The same bank lets a client, in a chat, block a card, raise a limit for a day, or order a replacement, and an agent does it.</td><td>AI agent, 3 to 4</td><td>commit: a limit raised for the wrong person</td><td>The client's identity from the bank's own authentication, never from the conversation; three tools; the block labelled write, the limit and the order labelled commit with a ceiling as a rule; the client confirms each; a stop.</td><td>Article 50(1): the client is told they talk to a system. Fraud rules and contract law for the limit. NIS2. GDPR Article 22 if a refusal is automated with legal effect.</td></tr>
+      <tr><td>A manufacturer confirms supplier orders: RPA reads the mailbox, a model step extracts quantities and dates, rules compare them with the purchase order; matches are confirmed by rule, mismatches go to a buyer.</td><td>Augmented workflow, 3 and 4</td><td>commit: a wrong confirmation to a supplier</td><td>Engine-owned path with the mailbox as a screen the RPA drives; the model step's output validated; the matching rule has a tolerance as a parameter; every confirmation recorded with the extracted values.</td><td>Not Annex III. Contract law for the confirmation. NIS2 Article 21(2) if the manufacturer is in scope.</td></tr>
+      <tr><td>The same manufacturer, as in part 1: an agent that orders spare parts up to a ceiling.</td><td>AI agent, 4</td><td>commit: money spent</td><td>Per-action policy with the ceiling as a rule, approval above it, the order tool labelled commit, an audit record per order, a stop.</td><td>Outside Annex III. NIS2 if in scope. Contract law does the rest, which is why the ceiling is a rule and not a prompt.</td></tr>
+      <tr><td>The same manufacturer lets an agent reshuffle the production plan in the execution system when a machine goes down, within constraints, and asks a planner before it changes a delivery promise.</td><td>AI agent, 4</td><td>write; commit at the promise</td><td>The solver from part 2 returns feasible plans; the agent chooses among them and writes through a tool bounded to the planning window; the promise change is a commit with a hold; the previous plan is kept for reversal.</td><td>Machinery and product-safety rules for the plant. Annex III point 2 only if the plant is critical infrastructure and the agent is a safety component, which a scheduler usually is not. NIS2.</td></tr>
+    </tbody>
+  </table></div></div>
+
+<div class="post">
+  <p>Two of the nine are high-risk, both at the agency, and in each case the reason is the job, not the family. Read the platform column instead and the pattern is the one part 1 promised: the workflow rows need an engine and a validated step, the agent rows need a gateway, two identities, a policy, a hold and a record, and the difference between a level 3 agent and a level 4 agent is a single line in the policy that says which actions are held. Move that line and the job moves rows without anyone changing the model.</p>
+
+  <h2>What this row teaches the next</h2>
+  <p>One agent, one perimeter, one person who can stop it. Every control in this part assumes those three are singular: the tool list belongs to an agent, the identity names it, the approval goes to a person who can see the whole loop. The next row breaks the assumption. An orchestrator receives a goal instead of a task, splits it, and hands the pieces to other agents, each with its own tools, sometimes in another runtime, sometimes in another organisation. The perimeter has to travel with the handover, and the question that carries over is the one the series was heading for: when the agent that acts is not the agent that was given the goal, whose perimeter applies, and who is the person with the stop button?</p>
+
+  <div class="cta">
+    <strong>Next in the series</strong>
+    <ol class="series">
+      <li><span><a href="../part-1/">Part 1</a></span>The map: who decides, who acts, and how far the system goes on its own.</li>
+      <li><span><a href="../part-2/">Part 2</a></span>AI without a language model: prediction, recommendation, perception, optimisation.</li>
+      <li><span><a href="../part-3/">Part 3</a></span>Generating and assisting: generative AI, integrated copilots, small specialised models.</li>
+      <li><span><a href="../part-4/">Part 4</a></span>Answering on your own documents: RAG, agentic RAG, graph RAG.</li>
+      <li><span><a href="../part-6/">Part 6</a></span>Pursuing a goal with several agents: agentic AI, delegation, intent. The most demanding regime, and the one sold first.</li>
+    </ol>
+  </div>
+
+  <div class="notice">This article is an engineer's reading of public legal texts and public code, checked against the versions and dates given below. It is not legal advice. For a real deployment, read the texts with counsel and with your supervisor's guidance for your sector.</div>
+
+  <div class="notice"><strong>Read, not run.</strong> Everything in this series comes from reading public documents and public code at a stated date, not from running them in production. Treat it as a map to test, not a result to trust: the texts are amended, the projects move monthly, and a placement that is right for one organisation's wiring is wrong for another's. Place your own jobs on the map with the people who own them. When something here does not match what you find, tell me, or better, tell the project or the authority concerned: that is the only way a map like this one stays true.</div>
+
+  <hr>
+  <div class="sources">
+    <strong>Sources</strong>
+    <ol>
+      <li><a href="https://modelcontextprotocol.io/specification/2026-07-28">Model Context Protocol specification</a>, revision 2026-07-28, the current revision: the "Security and Trust &amp; Safety" principles on the overview page; the "User Interaction Model" and "Security Considerations" sections of <a href="https://modelcontextprotocol.io/specification/2026-07-28/server/tools">Server features: Tools</a>; the <code>ToolAnnotations</code> interface in <a href="https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/schema/2026-07-28/schema.ts">schema/2026-07-28/schema.ts</a>, with the defaults quoted; and the <a href="https://modelcontextprotocol.io/specification/2026-07-28/changelog">key changes</a> since 2025-11-25. Read 24 September 2026. Part 1 quoted revision 2025-06-18; the sentences quoted there are unchanged in the current one.</li>
+      <li><a href="https://www.anthropic.com/research/building-effective-agents">Building effective agents</a>, Anthropic, 19 December 2024: workflows and agents, the five workflow patterns, and the paragraph on when to use agents. Read 24 September 2026.</li>
+      <li><a href="https://genai.owasp.org/llmrisk/llm062025-excessive-agency/">OWASP Top 10 for LLM Applications 2025, LLM06: Excessive Agency</a>: the three root causes and the mitigation list. Read 24 September 2026.</li>
+      <li>Regulation (EU) 2024/1689 (AI Act): <a href="https://artificialintelligenceact.eu/article/3/">Article 3</a>(3), (4) and (49); <a href="https://artificialintelligenceact.eu/article/12/">Article 12</a>; <a href="https://artificialintelligenceact.eu/article/14/">Article 14</a>; <a href="https://artificialintelligenceact.eu/article/26/">Article 26</a>; <a href="https://artificialintelligenceact.eu/article/73/">Article 73</a>, read on artificialintelligenceact.eu on 24 September 2026. Article 25(1), Article 50(1) and Annex III points 2 and 5, as read for the earlier parts, 22 and 23 September 2026.</li>
+      <li>Regulation (EU) 2016/679 (GDPR), Articles 5(1)(d) and 22; Federal Act on Data Protection (FADP, SR 235.1), Articles 7, 8 and 21; Directive (EU) 2022/2555 (NIS2), Article 21(2); FINMA Guidance 08/2024. As read for the first series and for parts 1 to 4, 22 and 23 September 2026.</li>
+      <li>Repositories, release tags and dates from each repository's GitHub releases page, 24 September 2026: <a href="https://github.com/Kuadrant/mcp-gateway">Kuadrant/mcp-gateway</a>, Apache-2.0, v0.9.0, 14 August 2026; <a href="https://github.com/Kuadrant/authorino">Kuadrant/authorino</a>, Apache-2.0, v0.28.0, 22 September 2026; <a href="https://github.com/open-policy-agent/opa">OPA</a>, Apache-2.0, v1.20.2, 3 September 2026; <a href="https://github.com/microsoft/agent-governance-toolkit">Agent Governance Toolkit</a>, MIT, release v4.1.0, 9 June 2026, tag v5.0.0, 27 July 2026; <a href="https://github.com/keycloak/keycloak">Keycloak</a>, Apache-2.0, 26.7.4, 16 September 2026; <a href="https://github.com/spiffe/spire">SPIRE</a>, Apache-2.0, v1.15.3, 21 August 2026; <a href="https://github.com/temporalio/temporal">Temporal</a>, MIT, v1.32.0, 11 September 2026; <a href="https://github.com/argoproj/argo-workflows">Argo Workflows</a>, Apache-2.0, v4.1.4, 18 September 2026; <a href="https://github.com/robotframework/robotframework">Robot Framework</a>, Apache-2.0, v7.5, 14 September 2026; <a href="https://github.com/NVIDIA/OpenShell">OpenShell</a>, Apache-2.0, v0.0.116, 28 August 2026.</li>
+      <li><a href="https://hokonoken.github.io/agent-stack-blueprint/">Agent stack blueprint</a>, the first series: part 1 for the MCP gateway and identity, part 4 for the policy per action, the manifest, the digest-echoing approval and the hold, part 5 for the log entry per tool call, part 6 for the rollout gate.</li>
+    </ol>
+    <p>Independent work, not affiliated with any regulator, standards body, foundation or vendor named. Not legal advice. Product names belong to their owners. Views are my own and do not represent the position of my employer. Text and diagrams: <a href="../LICENSE.md">CC BY 4.0</a>; quoted code and documents stay under their own licences.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

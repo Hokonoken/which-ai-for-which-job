@@ -6,8 +6,8 @@ Six articles on choosing the right kind of AI system for a given job, and on wha
 2. [AI without a language model: prediction, recommendation, perception, optimisation](part-2/)
 3. [Generating and assisting: generative AI, copilots, small specialised models](part-3/)
 4. [Answering on your own documents: RAG, agentic RAG, graph RAG](part-4/)
-5. Acting within a perimeter: the AI agent and augmented workflows
-6. Pursuing a goal with several agents: agentic AI
+5. [Acting within a perimeter: the AI agent with its tools, and the augmented workflow as the migration path](part-5/)
+6. [Pursuing a goal with several agents: agentic AI, delegation, intent](part-6/)
 
 Companion to [the agent stack blueprint](https://hokonoken.github.io/agent-stack-blueprint/), which describes the platform these articles refer to.
 
