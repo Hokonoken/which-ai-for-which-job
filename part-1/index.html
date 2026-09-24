@@ -240,9 +240,9 @@ table.jobs td,table.jobs th{white-space:normal}
 <text class="cell" x="462" y="167">the next system in line</text><text class="cell" x="462" y="184">or a person</text>
 <text class="cell" x="1035" y="167">model registry, input validation,</text><text class="cell" x="1035" y="184">the system that consumes the output</text>
 <rect class="lvl on" x="650" y="164" width="22" height="22" rx="3"/>
-<rect class="lvl" x="678" y="164" width="22" height="22" rx="3"/>
-<rect class="lvl" x="706" y="164" width="22" height="22" rx="3"/>
-<rect class="lvl" x="734" y="164" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="678" y="164" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="706" y="164" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="734" y="164" width="22" height="22" rx="3"/>
 <rect class="lvl" x="762" y="164" width="22" height="22" rx="3"/>
 <g class="bread"><rect x="800" y="164" width="52" height="22" rx="3"/><text class="badge" x="826.0" y="179" text-anchor="middle">READ</text></g>
 <text class="cell" x="915" y="179">training run</text>
@@ -291,7 +291,7 @@ table.jobs td,table.jobs th{white-space:normal}
 <rect class="lvl" x="650" y="386" width="22" height="22" rx="3"/>
 <rect class="lvl on" x="678" y="386" width="22" height="22" rx="3"/>
 <rect class="lvl on" x="706" y="386" width="22" height="22" rx="3"/>
-<rect class="lvl" x="734" y="386" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="734" y="386" width="22" height="22" rx="3"/>
 <rect class="lvl" x="762" y="386" width="22" height="22" rx="3"/>
 <g class="bread"><rect x="800" y="386" width="52" height="22" rx="3"/><text class="badge" x="826.0" y="401" text-anchor="middle">READ</text></g>
 <text class="cell" x="915" y="401">index refresh</text>
@@ -307,11 +307,11 @@ table.jobs td,table.jobs th{white-space:normal}
 <rect class="lvl" x="650" y="460" width="22" height="22" rx="3"/>
 <rect class="lvl" x="678" y="460" width="22" height="22" rx="3"/>
 <rect class="lvl on" x="706" y="460" width="22" height="22" rx="3"/>
-<rect class="lvl" x="734" y="460" width="22" height="22" rx="3"/>
+<rect class="lvl on" x="734" y="460" width="22" height="22" rx="3"/>
 <rect class="lvl" x="762" y="460" width="22" height="22" rx="3"/>
-<g class="bwrite"><rect x="800" y="460" width="56" height="22" rx="3"/><text class="badge" x="828.0" y="475" text-anchor="middle">WRITE</text></g>
+<g class="bcommit"><rect x="800" y="460" width="56" height="22" rx="3"/><text class="badge" x="828.0" y="475" text-anchor="middle">COMMIT</text></g>
 <text class="cell" x="915" y="475">live process data</text>
-<text class="ref" x="1035" y="497">S1 · PART 4</text>
+<text class="ref" x="1035" y="497">S1 · PART 5, 6</text>
 </g>
 <g class="g4">
 <line class="rowline" x1="20" y1="508" x2="1260" y2="508"/>
@@ -339,7 +339,7 @@ table.jobs td,table.jobs th{white-space:normal}
 <rect class="lvl" x="650" y="608" width="22" height="22" rx="3"/>
 <rect class="lvl" x="678" y="608" width="22" height="22" rx="3"/>
 <rect class="lvl" x="706" y="608" width="22" height="22" rx="3"/>
-<rect class="lvl on" x="734" y="608" width="22" height="22" rx="3"/>
+<rect class="lvl" x="734" y="608" width="22" height="22" rx="3"/>
 <rect class="lvl on" x="762" y="608" width="22" height="22" rx="3"/>
 <g class="bcommit"><rect x="800" y="608" width="66" height="22" rx="3"/><text class="badge" x="833.0" y="623" text-anchor="middle">COMMIT</text></g>
 <text class="cell" x="915" y="623">live systems</text>
@@ -349,7 +349,7 @@ table.jobs td,table.jobs th{white-space:normal}
 </svg>
   </div>
   <div class="legend"><span><i class="sw g1"></i>no language model</span><span><i class="sw g2"></i>content, a person reads</span><span><i class="sw g3"></i>your sources, a person reads</span><span><i class="sw g4"></i>actions in systems</span><span>Autonomy 1 informs · 2 proposes · 3 acts under approval · 4 acts, reviewed after · 5 delegates</span><span>Worst action: read nothing changes · write a record changes, can be reversed · commit money, letters, rights; reversal is a new action</span></div>
-  <figcaption>The map. Eight families, sorted by who decides and who acts. The autonomy cells show the range a family is usually deployed at, not a ceiling: a predictive model wired to an automatic refusal sits at 4 with no language model in sight. The last column names the layer of the platform from the first series that carries the risk, and the part where it is described. Levels are a working scale of mine, not a standard; see the note below. Colours group the families by what a failure damages first.</figcaption>
+  <figcaption>The map. Eight families, sorted by who decides and who acts. The autonomy cells show the range the later parts place jobs at: a predictive model wired to an automatic refusal sits at 4 with no language model in sight, and an agent that only reads, but chooses its reads, sits at 4 too. The last column names the layer of the platform from the first series that carries the risk, and the part where it is described. Levels are a working scale of mine, not a standard; see the note below. Colours group the families by what a failure damages first.</figcaption>
 </figure>
 
 <div class="post">
@@ -360,9 +360,9 @@ table.jobs td,table.jobs th{white-space:normal}
   <p>There is no recognised standard for levels of autonomy in AI systems. The AI Act uses the phrase and does not grade it. So this series uses a working scale of five levels, borrowed in spirit from the way road vehicles are graded: SAE J3016 places a car at a level by asking who is driving, the person or the system, not by how good its sensors are. Same here. What places a system high is not the size of its model but who acts on the output.</p>
   <div class="lvls">
     <div><b>1 · INFORMS</b><span>Emits a score, a label, a rank. A person or a rule decides and acts.</span></div>
-    <div><b>2 · PROPOSES</b><span>Drafts content or a proposal. A person reads it before anything leaves.</span></div>
-    <div><b>3 · ACTS UNDER APPROVAL</b><span>Executes inside a perimeter; listed actions wait for a person.</span></div>
-    <div><b>4 · ACTS, REVIEWED AFTER</b><span>Executes inside a perimeter; a person can read the record and stop it.</span></div>
+    <div><b>2 · PROPOSES</b><span>Drafts content, an answer or a proposal. A person reads it before anyone acts on it.</span></div>
+    <div><b>3 · ACTS UNDER APPROVAL</b><span>Acts on its own, except that listed actions wait for a person.</span></div>
+    <div><b>4 · ACTS, REVIEWED AFTER</b><span>Acts on its own; a person can read the record, override it and stop it.</span></div>
     <div><b>5 · DELEGATES</b><span>Sets sub-goals and hands them to other agents. People set the goal and the boundaries.</span></div>
   </div>
   <p>The scale says nothing about model quality, and that is the point. A credit-scoring model from 2015, wired so that a score below a threshold refuses the application without anyone looking, is at level 4. A frontier model drafting emails that a person sends is at level 2. If your governance effort follows the model's sophistication, it is on the wrong row.</p>
@@ -401,15 +401,15 @@ table.jobs td,table.jobs th{white-space:normal}
   <div class="cta">
     <strong>Next in the series</strong>
     <ol class="series">
-      <li><span><a href="../part-2/">Part 2</a></span>AI without a language model: prediction, recommendation, perception, optimisation. What already runs everywhere, what it asks of the platform, and why it is not "less" than the rest.</li>
+      <li><span><a href="../part-2/">Part 2</a></span>AI without a language model: prediction, recommendation, perception, optimisation. What already runs everywhere, and why it is not "less" than the rest.</li>
       <li><span><a href="../part-3/">Part 3</a></span>Generating and assisting: generative AI, integrated copilots, small specialised models. The person reads, the risk is the content.</li>
       <li><span><a href="../part-4/">Part 4</a></span>Answering on your own documents: RAG, agentic RAG, graph RAG. The risk becomes access to sources, and freshness.</li>
-      <li><span><a href="../part-5/">Part 5</a></span>Acting within a perimeter: the AI agent with its tools, and the augmented workflow as the migration path.</li>
+      <li><span><a href="../part-5/">Part 5</a></span>Acting within a perimeter: the AI agent with its tools, and the augmented workflow as the migration path. The risk is the action; the perimeter is outside the model.</li>
       <li><span><a href="../part-6/">Part 6</a></span>Pursuing a goal with several agents: agentic AI, delegation, intent. The most demanding regime, and the one sold first.</li>
     </ol>
   </div>
 
-  <div class="notice">This article is an engineer's reading of public legal texts, checked against the versions and dates given below. It is not legal advice. For a real deployment, read the texts with counsel and with your supervisor's guidance for your sector.</div>
+  <div class="notice">This article is an engineer's reading of public legal texts and public code, checked against the versions and dates given below. It is not legal advice. For a real deployment, read the texts with counsel and with your supervisor's guidance for your sector.</div>
 
   <div class="notice"><strong>Read, not run.</strong> Everything in this series comes from reading public documents and public code at a stated date, not from running them in production. Treat it as a map to test, not a result to trust: the texts are amended, the projects move monthly, and a placement that is right for one organisation's wiring is wrong for another's. Place your own jobs on the map with the people who own them. When something here does not match what you find, tell me, or better, tell the project or the authority concerned: that is the only way a map like this one stays true.</div>
 
@@ -420,11 +420,11 @@ table.jobs td,table.jobs th{white-space:normal}
       <li>Regulation (EU) 2024/1689 (AI Act), Article 3(1), Article 6(2) and (3), Article 14, Article 50, Annex III point 5; texts read on <a href="https://artificialintelligenceact.eu/">artificialintelligenceact.eu</a> on 23 September 2026. Application dates as amended by Regulation (EU) 2026/1744, read in <a href="https://hokonoken.github.io/agent-stack-blueprint/part-3/">part 3 of the first series</a>.</li>
       <li>Federal Act on Data Protection (FADP, SR 235.1), Fedlex, English translation, Articles 7, 8 and 21; Directive (EU) 2022/2555 (NIS2), Article 21(2); FINMA Guidance 08/2024, sections 2.2 to 2.7. All as read for part 3 of the first series, 22 September 2026.</li>
       <li><a href="https://www.anthropic.com/research/building-effective-agents">Building effective agents</a>, Anthropic, 19 December 2024: the distinction between workflows, "where LLMs and tools are orchestrated through predefined code paths", and agents, "where LLMs dynamically direct their own processes and tool usage". The augmented-workflow and agent rows follow that line.</li>
-      <li><a href="https://modelcontextprotocol.io/specification/2025-06-18">Model Context Protocol specification</a>, revision 2025-06-18, section "Security and Trust &amp; Safety", read 23 September 2026.</li>
+      <li><a href="https://modelcontextprotocol.io/specification/2025-06-18">Model Context Protocol specification</a>, revision 2025-06-18, section "Security and Trust &amp; Safety", read 23 September 2026; the current revision, 2026-07-28, keeps the sentences quoted here unchanged (see part 5).</li>
       <li>SAE J3016_202104, Taxonomy and Definitions for Terms Related to Driving Automation Systems for On-Road Motor Vehicles, April 2021, used as an analogy only; its level definitions are not reproduced here.</li>
       <li><a href="https://hokonoken.github.io/agent-stack-blueprint/">Agent stack blueprint</a>, the first series, parts 1, 3, 4 and 5, for the platform layers named in the last column of the map.</li>
     </ol>
-    <p>Independent work, not affiliated with any regulator, standards body or vendor named. Not legal advice. Product names belong to their owners. Views are my own and do not represent the position of my employer. Text and diagrams: <a href="../LICENSE.md">CC BY 4.0</a>; quoted code and documents stay under their own licences.</p>
+    <p>Independent work, not affiliated with any regulator, court, standards body, foundation or vendor named. Not legal advice. Product names belong to their owners. Views are my own and do not represent the position of my employer. Text and diagrams: <a href="../LICENSE.md">CC BY 4.0</a>; quoted code and documents stay under their own licences.</p>
   </div>
 
 </div>
