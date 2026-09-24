@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="author" content="Hokonoken">
+<meta name="description" content="Part 6 of Which AI for which job: pursuing a goal with several agents. Agentic AI as delegation: intent declared, a child's perimeter narrower than its parent's, an audit tree, and one person who can stop every branch. The most demanding regime, and the one sold first.">
+<title>Pursuing a Goal with Several Agents</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --ink:#131A24; --muted:#5A6675; --line:#D5DBE3; --band:#E9EDF3;
+  --rh:#B42318; --nv:#3F7D0B; --ms:#175CD3; --oss:#5A6675; --hot:#C2410C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+    --rh:#F97066; --nv:#86CB3C; --ms:#84ADFF; --oss:#94A1B2; --hot:#FB923C;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1117; --surface:#151B24; --ink:#E6EBF2; --muted:#94A1B2; --line:#2A3340; --band:#1A222D;
+  --rh:#F97066; --nv:#86CB3C; --ms:#84ADFF; --oss:#94A1B2; --hot:#FB923C;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.55;padding-inline:20px;padding-block:32px 56px}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:30px}
+h1,h2,h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(28px,4.6vw,44px);font-weight:700;line-height:1.06;letter-spacing:-.01em}
+h2{font-size:23px;font-weight:600}
+h3{font-size:17px;font-weight:600}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:70ch;color:var(--muted);margin:0}
+header{display:flex;flex-direction:column;gap:12px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:13px;color:var(--muted);padding:12px 0;border-block:1px solid var(--line)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.sw{display:inline-block;width:22px;height:12px;border:2px solid var(--oss);background:var(--surface)}
+.sw.rh{border-color:var(--rh)} .sw.nv{border-color:var(--nv)} .sw.ms{border-color:var(--ms);border-style:dashed}
+figure{margin:0;display:flex;flex-direction:column;gap:12px}
+.svgbox{overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:10px}
+svg{display:block;min-width:1040px;width:100%;height:auto;color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif}
+svg .b rect{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .rh rect{stroke:var(--rh)} svg .nv rect{stroke:var(--nv)}
+svg .ms rect{stroke:var(--ms);stroke-dasharray:6 3}
+svg .t{font-size:13px;font-weight:600;fill:currentColor}
+svg .s{font-size:10.5px;fill:var(--muted)}
+svg .tag{font-size:9px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace}
+svg .trh{fill:var(--rh)} svg .tnv{fill:var(--nv)} svg .tms{fill:var(--ms)} svg .toss{fill:var(--oss)}
+svg .frame{fill:var(--band);stroke:var(--line);stroke-width:1}
+svg .pod{fill:none;stroke:var(--nv);stroke-width:1.6;stroke-dasharray:7 4}
+svg .agt{fill:none;stroke:var(--ms);stroke-width:1.4;stroke-dasharray:6 3}
+svg .cap{font-size:10.5px;letter-spacing:.07em;font-weight:600}
+svg .lbl{font-size:10.5px;fill:var(--muted)}
+svg .flow{fill:none;stroke:currentColor;stroke-width:1.3}
+svg .msflow{fill:none;stroke:var(--ms);stroke-width:1.4;stroke-dasharray:5 3}
+svg .tr{fill:none;stroke:var(--muted);stroke-width:1.1;stroke-dasharray:2 4}
+svg .mfill{fill:var(--ms)} svg .tfill{fill:var(--muted)}
+svg .bar rect{fill:var(--band);stroke:var(--line)}
+svg .mat{font-size:9px;font-style:italic;fill:var(--muted)}
+svg .svc{fill:none;stroke:var(--line);stroke-width:1.6;stroke-dasharray:3 3}
+svg .hotn rect{fill:var(--surface);stroke:var(--hot);stroke-width:2.4}
+figcaption a{color:var(--hot)}
+svg a{cursor:pointer}
+.tblbox{overflow-x:auto;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:800px;font-size:13.5px}
+th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:10px;border-bottom:1px solid var(--line);background:var(--band)}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600;white-space:nowrap}
+td code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px}
+svg .blue rect{fill:var(--surface);stroke:var(--ms);stroke-width:1.8}
+svg .green rect{fill:var(--surface);stroke:var(--nv);stroke-width:1.8}
+svg .tblue{fill:var(--ms)} svg .tgreen{fill:var(--nv)}
+svg .wflow{fill:none;stroke:var(--nv);stroke-width:2.2}
+svg .wflow2{fill:none;stroke:var(--ms);stroke-width:2.2}
+svg .shadow{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:4 3}
+svg .gate rect{fill:var(--band);stroke:var(--hot);stroke-width:1.6}
+svg .hott{fill:var(--hot)}
+.sw.hot{border-color:var(--hot);border-width:3px}
+svg .ghost rect{fill:var(--surface);stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 3}
+figcaption{max-width:78ch;color:var(--muted);font-size:14px}
+ol.steps{margin:0;padding-left:22px;max-width:78ch;display:flex;flex-direction:column;gap:8px}
+ol.steps li::marker{font-family:"IBM Plex Mono",ui-monospace,monospace;color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));border:1px solid var(--line);background:var(--surface)}
+.col{padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.col h3{display:flex;align-items:center;gap:10px}
+.col ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.col code,.q code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;overflow-wrap:anywhere}
+.q{border-left:3px solid var(--rh);padding:6px 14px;max-width:78ch;display:flex;flex-direction:column;gap:6px}
+.q blockquote{margin:0;font-size:16px}
+.q span{font-size:13px;color:var(--muted)}
+footer{font-size:12.5px;color:var(--muted);max-width:88ch}
+section{display:flex;flex-direction:column;gap:14px}
+
+.post{max-width:76ch;margin:0 auto;display:flex;flex-direction:column;gap:22px;font-size:16.5px;line-height:1.6}
+.post h1{font-size:clamp(30px,5vw,46px)}
+.post h2{margin-top:10px}
+.post p{margin:0}
+.post ul,.post ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.meta{font-size:13.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+.kicker{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--hot)}
+.takeaways{border:1px solid var(--line);background:var(--surface);padding:18px 22px;display:flex;flex-direction:column;gap:10px}
+.takeaways h3{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.takeaways ol{font-size:15.5px}
+.quote{border-left:3px solid var(--rh);padding:8px 18px;display:flex;flex-direction:column;gap:8px}
+.quote blockquote{margin:0;font-size:18px;font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:500}
+.quote span{font-size:13.5px;color:var(--muted)}
+.cta{border:2px solid var(--hot);padding:18px 22px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.cta strong{color:var(--hot)}
+.series{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
+.series li{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:baseline}
+.series li span a{color:inherit;text-decoration:none}
+.series li span a:hover{text-decoration:underline}
+.series li span{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--hot);white-space:nowrap}
+.fig{display:flex;flex-direction:column;gap:10px}
+.fig .svgbox{padding:8px}
+.fig figcaption{font-size:13.5px}
+.wide{max-width:1600px;margin:0 auto;width:100%}
+.sources{font-size:13.5px;color:var(--muted)}
+.sources ol{gap:4px}
+.sources a{color:inherit}
+hr{border:0;border-top:1px solid var(--line);margin:8px 0}
+.notice{font-size:13.5px;color:var(--muted);border:1px dashed var(--line);padding:10px 14px}
+.sn{max-width:76ch;margin:0 auto 18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.04em;color:var(--muted)}
+.sn a{color:var(--us);text-decoration:none}
+.sn a:hover,.sn a:focus-visible{text-decoration:underline;outline:none}
+body{margin:0}
+
+/* larger type */
+.post{font-size:18px;line-height:1.65}
+.takeaways ol{font-size:17px}
+.meta{font-size:14.5px}
+.kicker{font-size:13px}
+figcaption,.fig figcaption{font-size:15px}
+.fig figcaption,figure figcaption{max-width:110ch;width:100%;margin:0;padding-inline:0;text-align:left}
+table,table.repl{font-size:15px}
+th{font-size:12px}
+pre.cfg{font-size:13.5px;line-height:1.6}
+.cfgblock .src{font-size:12.5px}
+.cfgblock .note{font-size:15px}
+.cfgblock > strong{font-size:16px}
+.notice{font-size:15px}
+.sources{font-size:15px}
+.rules p,.cv p,.law p,.law ul{font-size:15.5px}
+.rules h3,.cv h3{font-size:17.5px}
+.law h3{font-size:17px}
+.law .when{font-size:12.5px}
+.series{font-size:16.5px}
+.sn{font-size:13px}
+
+/* desktop scale: reads like a 130 % browser zoom, phones untouched */
+@media (min-width:641px){body{zoom:1.3}}
+
+/* series 2: matrix figure */
+svg .hd{font-size:10.5px;letter-spacing:.07em;font-weight:600;fill:var(--muted)}
+svg .fam{font-size:13.5px;font-weight:600;fill:currentColor}
+svg .sub{font-size:10.5px;fill:var(--muted)}
+svg .cell{font-size:11.5px;fill:currentColor}
+svg .rowline{stroke:var(--line);stroke-width:1}
+svg .band{fill:var(--band)}
+svg .lvl{fill:var(--surface);stroke:var(--line);stroke-width:1}
+svg .lvl.on{stroke:none}
+svg .g1 .lvl.on{fill:var(--oss)} svg .g2 .lvl.on{fill:var(--nv)} svg .g3 .lvl.on{fill:var(--ms)} svg .g4 .lvl.on{fill:var(--hot)}
+svg .g1 .bar{fill:var(--oss)} svg .g2 .bar{fill:var(--nv)} svg .g3 .bar{fill:var(--ms)} svg .g4 .bar{fill:var(--hot)}
+svg .badge{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500}
+svg .bread rect{fill:var(--surface);stroke:var(--oss);stroke-width:1.2} svg .bread text{fill:var(--oss)}
+svg .bwrite rect{fill:var(--surface);stroke:var(--ms);stroke-width:1.2} svg .bwrite text{fill:var(--ms)}
+svg .bcommit rect{fill:var(--surface);stroke:var(--hot);stroke-width:1.8} svg .bcommit text{fill:var(--hot)}
+svg .ref{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;fill:var(--muted)}
+.sw.g1{border-color:var(--oss);background:var(--oss)} .sw.g2{border-color:var(--nv);background:var(--nv)} .sw.g3{border-color:var(--ms);background:var(--ms)} .sw.g4{border-color:var(--hot);background:var(--hot)}
+.legend{max-width:1600px;margin:0 auto;width:100%}
+table.jobs{table-layout:fixed;min-width:960px}
+.wide + .post,.fig + .post{margin-top:26px}
+.post + .wide{margin-top:14px}
+table.jobs td:first-child{white-space:normal;font-weight:400}
+table.jobs td,table.jobs th{white-space:normal}
+.lvls{border:1px solid var(--line);background:var(--surface);padding:14px 18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 18px;font-size:15px}
+.lvls div{display:flex;flex-direction:column;gap:2px}
+.lvls b{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;color:var(--hot)}
+
+/* part 2 figure */
+svg .g1 rect.box{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .hotbox rect.box{fill:var(--surface);stroke:var(--hot);stroke-width:2.2}
+svg .bluebox rect.box{fill:var(--surface);stroke:var(--ms);stroke-width:1.6}
+svg .greybox rect.box{fill:var(--surface);stroke:var(--oss);stroke-width:1.4}
+svg .art{font-size:9.5px;letter-spacing:.06em;font-family:"IBM Plex Mono",ui-monospace,monospace;fill:var(--hot)}
+svg .note{font-size:11.5px;fill:var(--muted)}
+svg .lv{font-size:9.5px;letter-spacing:.08em;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;fill:currentColor}
+
+/* part 3 figure */
+svg .greenbox rect.box{fill:var(--surface);stroke:var(--nv);stroke-width:1.6}
+svg .colhd{font-size:13.5px;font-weight:600;fill:currentColor}
+svg .yield{font-size:11px;font-weight:600;fill:var(--hot)}
+svg .tnv{fill:var(--nv)}
+</style>
+</head>
+<body>
+<nav class="sn"><a href="../part-5/">&larr; Part 5</a><a href="../">The series</a><span>Part 6 of 6</span></nav>
+<div class="post">
+  <span class="kicker">Which AI for which job · part 6 of 6</span>
+  <h1>Pursuing a goal with several agents: agentic AI, delegation, intent, and the person who can still stop it</h1>
+  <p class="lede">Part 5 ended on a question: when the agent that acts is not the agent that was given the goal, whose perimeter applies, and who is the person with the stop button? This last row is where a system receives a goal rather than a task, splits it, and hands the pieces to other agents, each with its own tools, sometimes in another runtime, sometimes in another organisation. It is the row every deck opens with and the one the fewest organisations run. The map's answer to the question is the sentence the whole series was written for: "agentic" is not a higher level of the same thing, it is a different regime of responsibility, in which the unit of governance is no longer the tool call but the handover.</p>
+  <div class="meta"><span>Hokonoken</span><span>September 2026</span><span>Reading time: 20 min</span><span>Not legal advice · Views are my own, not my employer's</span></div>
+
+  <div class="takeaways">
+    <h3>Three things to take away</h3>
+    <ol>
+      <li><strong>Agentic AI is delegation, and delegation can only narrow.</strong> An orchestrator that hands part of a goal to another agent hands over a perimeter with it, and the child's perimeter must be a subset of the parent's: fewer tools, a lower ceiling, a smaller budget, a bounded depth. The one open toolkit the first series read enforces exactly that: a sub-agent's intent must be a subset of its parent's planned actions, and the code raises an error otherwise.</li>
+      <li><strong>Intent is declared, not configured, and the audit becomes a tree.</strong> Before it acts, an agent states what it plans to do, and the runtime checks each action against the declaration. The record of a goal is then a tree: the goal at the root, the handovers as nodes, part 5's tool calls as leaves. Anthropic's own multi-agent system needed "full production tracing" to be debugged at all, and "multi-agent systems use about 15× more tokens than chats". The budget is a rule, inherited and divided.</li>
+      <li><strong>The law has no row for the orchestrator. It has a person.</strong> Article 14 asks for a natural person who can stop the system; Article 26(2) asks that they have "competence, training and authority". Across organisations, the protocol built for agent-to-agent work makes the other agent "opaque" by design, so inspection is replaced by identity and contract. The stop has to reach every branch, or it is not a stop.</li>
+    </ol>
+  </div>
+
+  <h2>What changed since part 5</h2>
+  <p>A goal instead of a task. Anthropic's 2024 note lists "orchestrator-workers" among its workflow patterns: "a central LLM dynamically breaks down tasks, delegates them to worker LLMs, and synthesizes their results". In that note the workers write text and the path is decided in code, which makes it part 3 several times over. Give the workers tools and let the orchestrator decide at run time what to delegate and to whom, and the map has no row left but this one: the model decides the split, the path and the actions, and a person sees the outcome. Level 5, delegates.</p>
+  <p>The same company described what it cost them to run one. Their research system, in June 2025, has "a lead agent" that "coordinates the process while delegating to specialized subagents that operate in parallel". Three sentences from that note belong on the map. "Agents typically use about 4× more tokens than chat interactions, and multi-agent systems use about 15× more tokens than chats." "Without effective mitigations, minor system failures can be catastrophic for agents." And on where the pattern does not pay: "Most coding tasks involve fewer truly parallelizable tasks than research, and LLM agents are not yet great at coordinating and delegating to other agents in real time." Read with the map, the row is worth its cost where a goal splits into independent reads, which is research, and costly where the pieces write to the same systems in a fixed order, which is a close, an onboarding, an incident. Those are the jobs the row is sold for.</p>
+  <p>So the map draws the line between part 5 and part 6 not at the number of agents but at who drew the child's perimeter. If a person drew each agent's perimeter and a process engine calls the agents in order, that is part 5 several times, an augmented workflow whose steps happen to be agents, and it is the right way to build most of the nine jobs below. It becomes this row when an agent decides, at run time, to give a piece of the goal to another agent. Delegation is the act. Intent is what makes it governable, and it is the one control this row adds to everything the first series built.</p>
+
+  <h2>Three shapes of delegation</h2>
+  <p><strong>Inside one runtime.</strong> The orchestrator and its workers share a platform, a gateway and an identity provider. Part 4 of the first series read the one open toolkit that governs this shape and the relevant lines are short. An agent declares an intent before it acts, a list of planned actions with bounds on their arguments; the runtime checks each action against it. A manifest sets a maximum delegation depth and requires scope narrowing; an intent created for a sub-agent must be a subset of its parent's planned actions, and the code raises an error otherwise. Each delegation is logged. Every worker has its own workload identity; a worker that reads has no write tool on its list; a worker that commits carries part 5's hold with it. Nothing in this shape is new except the check on the handover, and that check is the whole row.</p>
+  <p><strong>Across runtimes.</strong> The Agent2Agent protocol, Apache-2.0 and under the Linux Foundation, at v1.0.1 since 28 May 2026, describes itself as "an open protocol enabling communication and interoperability between opaque agentic applications". Two objects carry the weight. The Agent Card is "a JSON metadata document published by an A2A Server, describing its identity, capabilities, skills, service endpoint, and authentication requirements". The Task is "the fundamental unit of work managed by A2A, identified by a unique ID", and "tasks are stateful and progress through a defined lifecycle". Agents collaborate, the specification says, "without needing to share their internal thoughts, plans, or tool implementations". That opacity is the design goal and the governance problem in one sentence. You cannot narrow a perimeter you cannot see. What you can do is what the protocol gives you: authenticate the agent by its card, give it a task and not the goal, bound the task, keep its lifecycle in your tree, and test that cancelling it works.</p>
+  <p><strong>Across organisations.</strong> The supplier's agent, the other agency's agent, the counterparty's agent. The remote agent is a supplier in the sense of NIS2 Article 21(2), the message is the only record you hold, and the contract is the perimeter. OWASP's agentic threat list, at version 1.1 of December 2025, has three entries written for this shape: "Insecure Inter-Agent Protocol Abuse", where "attackers could manipulate coordination messages, memory, or protocol logic to bypass safeguards and alter agent goals or actions"; "Identity Spoofing &amp; Impersonation"; and "Rogue Agents in Multi-Agent Systems". None of the three can be answered inside your runtime. They are answered by the card, the contract and the tree.</p>
+</div>
+
+<figure class="fig wide">
+  <div class="svgbox">
+<svg viewBox="0 0 1280 640" role="img" aria-label="A tree. At the top left, the goal, given by a person with authority. An orchestrator receives it, declares its intent, splits it and delegates to three children: worker A, which only reads; worker B, which writes and commits through its own gateway with a hold at the commit and which delegates once more to worker B.1; and a remote agent reached through the A2A protocol, in another runtime or organisation, opaque by design, whose tools are not visible and whose perimeter is the contract. Each child's scope is a subset of its parent's, and depth is bounded. On the right, the audit tree: root is the goal and the person, nodes are the handovers, leaves are the tool calls of part 5, chained with a root hash and an external witness. A dashed stop line runs under every branch: cancel reaches every branch, including the remote task, or it is not a stop button.">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--hot)"/></marker><marker id="am" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker></defs>
+<rect class="frame" x="20" y="20" width="1240" height="600"/>
+<text class="cap" x="32" y="42" fill="currentColor">PURSUING A GOAL · THE UNIT OF GOVERNANCE IS THE HANDOVER</text>
+<g class="greybox"><rect class="box" x="30" y="60" width="240" height="90"/><text class="t" x="40" y="84">The goal</text><text class="s" x="40" y="102">from a person with authority</text><text class="s" x="40" y="118">over the outcome, with a budget</text><text class="art" x="40" y="140">ART. 26(2) · ONE PERSON, ONE STOP</text></g>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8" marker-end="url(#ah)" d="M270 100 L330 100"/>
+<g class="hotbox"><rect class="box" x="330" y="60" width="330" height="110"/><text class="t" x="342" y="84">Orchestrator</text><text class="s" x="342" y="102">declares its intent, splits the goal, delegates,</text><text class="s" x="342" y="118">synthesises what comes back</text><text class="lv" x="342" y="140">LEVEL 5 · DELEGATES</text><text class="ref" x="342" y="160">OWN IDENTITY · BUDGET · MAX DEPTH · A STOP</text></g>
+<g class="bluebox"><rect class="box" x="1020" y="60" width="230" height="300"/><text class="t" x="1032" y="84">The audit tree</text><text class="s" x="1032" y="102">one record for one goal</text></g>
+<text class="note" x="1032" y="128">root: the goal and the person</text>
+<text class="note" x="1032" y="146">node: each handover, who,</text>
+<text class="note" x="1032" y="164">to whom, which scope, when</text>
+<text class="note" x="1032" y="182">leaf: each tool call (part 5)</text>
+<text class="note" x="1032" y="200">chained, with a root hash</text>
+<text class="note" x="1032" y="218">and an external witness</text>
+<text class="note" x="1032" y="254">what the gate scores, and</text>
+<text class="note" x="1032" y="272">what Article 73 is written from</text>
+<text class="art" x="1032" y="316">ART. 12(1) · 26(6) · 73</text><text class="ref" x="1032" y="346">S1 · PART 5 (AUDIT TREE, WITNESS)</text>
+<path class="tr" marker-end="url(#am)" d="M660 90 L1018 90"/><text class="lbl" x="700" y="84">every handover is written here</text>
+<g class="hotbox"><rect class="box" x="60" y="240" width="280" height="96"/><text class="t" x="72" y="264">Worker A</text><text class="s" x="72" y="282">reads: gathers, checks, summarises</text><text class="lv" x="72" y="304">SCOPE ⊂ PARENT · LEVEL 4</text><text class="ref" x="72" y="324">PART 4 · NO WRITE TOOL ON ITS LIST</text></g>
+<g class="bread"><rect x="270" y="248" width="60" height="22" rx="3"/><text class="badge" x="300.0" y="263" text-anchor="middle">READ</text></g>
+<g class="hotbox"><rect class="box" x="380" y="240" width="280" height="96"/><text class="t" x="392" y="264">Worker B</text><text class="s" x="392" y="282">writes and commits, through its gateway</text><text class="lv" x="392" y="304">SCOPE ⊂ PARENT · HOLD AT THE COMMIT</text><text class="ref" x="392" y="324">PART 5 · THE PERIMETER, HANDED DOWN</text></g>
+<g class="bcommit"><rect x="590" y="248" width="60" height="22" rx="3"/><text class="badge" x="620.0" y="263" text-anchor="middle">COMMIT</text></g>
+<g class="ghost"><rect class="box" x="700" y="240" width="300" height="110"/><text class="t" x="712" y="264">Remote agent · A2A</text><text class="s" x="712" y="282">another runtime, or another organisation</text><text class="note" x="712" y="302">Agent Card: identity, skills, auth requirements</text><text class="note" x="712" y="318">Task: stateful, with a lifecycle; its tools not visible</text><text class="ref" x="712" y="338">OPAQUE BY DESIGN · THE CONTRACT IS ITS PERIMETER</text></g>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8" marker-end="url(#ah)" d="M420 170 L220 238"/>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8" marker-end="url(#ah)" d="M500 170 L520 238"/>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8" marker-end="url(#ah)" d="M580 170 L820 238"/>
+<g class="hotbox"><rect class="box" x="440" y="390" width="220" height="90"/><text class="t" x="452" y="414">Worker B.1</text><text class="s" x="452" y="432">fewer tools, a smaller budget</text><text class="lv" x="452" y="454">DEPTH 2 OF MAX 3</text><text class="ref" x="452" y="468">SCOPE ⊂ WORKER B</text></g>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8" marker-end="url(#ah)" d="M520 336 L520 388"/>
+<text class="lbl" x="530" y="366">delegates once more</text>
+<text class="note" x="60" y="372">Results go back up; the parent synthesises.</text><text class="note" x="60" y="388">A child that exhausts its budget stops;</text><text class="note" x="60" y="404">it does not borrow.</text><text class="note" x="60" y="420">A child's intent beyond its parent's is an</text><text class="note" x="60" y="436">error, not a warning (toolkit, first series).</text>
+<text class="note" x="700" y="372">You cannot narrow what you cannot see.</text><text class="note" x="700" y="388">Authenticate it by its card, give it a task,</text><text class="note" x="700" y="404">not the goal; bound it; keep its lifecycle in</text><text class="note" x="700" y="420">your tree; test that cancel reaches it.</text><text class="note" x="700" y="436">NIS2 21(2): a supplier.</text>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8;stroke-dasharray:6 4" d="M40 150 L40 500 L1000 500"/>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8;stroke-dasharray:6 4" marker-end="url(#ah)" d="M335 500 L335 340"/>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8;stroke-dasharray:6 4" marker-end="url(#ah)" d="M550 500 L550 484"/>
+<path class="flow" style="stroke:var(--hot);stroke-width:1.8;stroke-dasharray:6 4" marker-end="url(#ah)" d="M985 500 L985 354"/>
+<text class="hott" style="font-size:11px;font-weight:600" x="60" y="522">STOP · cancel reaches every branch, including the remote task, or it is not a stop button. Art. 14(4)(e).</text>
+<text class="note" x="32" y="556">Tokens: about 4× a chat for one agent, about 15× for several (Anthropic, June 2025). The budget is a rule, inherited and divided; "minor system failures can be catastrophic".</text>
+<text class="note" x="32" y="574">OWASP agentic threats, v1.1, December 2025: T6 intent breaking, T9 identity spoofing, T10 overwhelming the human in the loop, T13 rogue agents, T16 inter-agent protocol abuse.</text>
+<text class="ref" x="32" y="604">LEVELS FROM PART 1: 5 DELEGATES · A CHILD MAY ONLY BE NARROWER THAN ITS PARENT · THE PERSON AT THE ROOT CAN STOP THE WHOLE TREE</text>
+</svg>
+  </div>
+  <div class="legend"><span><i class="sw g1"></i>the goal and the person who gave it</span><span><i class="sw hot"></i>orchestrator and workers, each with its own perimeter</span><span><i class="sw" style="border-style:dashed;border-color:var(--muted)"></i>the remote agent, opaque by design</span><span><i class="sw g3"></i>the audit tree</span><span>Level from part 1: 5 delegates</span></div>
+  <figcaption>A goal, a person, an orchestrator, and three children: a worker that only reads, a worker that commits through its own gateway and delegates once more, and a remote agent reached through A2A whose tools you cannot see. Every handover narrows the scope and is written to the audit tree on the right, whose leaves are the tool calls of part 5. The dashed line under the branches is the stop: it has to reach every one of them, including the remote task.</figcaption>
+</figure>
+
+<div class="post">
+  <h2>Delegation, bounded: four rules</h2>
+  <p><strong>Narrower only.</strong> A child gets a subset of the parent's tools, a ceiling no higher than the parent's, a share of the parent's budget, and a depth one less. The toolkit's manifest states the first two as configuration and the intent check enforces them at run time; the last two are yours to add. A child that could do more than its parent is the failure OWASP calls "Privilege Compromise", and it is the failure every "autonomous" demo quietly relies on.</p>
+  <p><strong>Its own identity.</strong> Every agent in the tree has a workload identity, SPIRE in the first series, and no two share a credential. The remote agent is authenticated by its card and its card by whatever your organisation trusts. The record must be able to say which agent, on behalf of which parent, for which person, or the tree below is a list of events with no edges.</p>
+  <p><strong>A budget, inherited and divided.</strong> Tokens, actions, time, money. The person at the root sets it; the orchestrator divides it; a child that exhausts its share stops and reports, it does not borrow. Fifteen times the tokens of a chat is Anthropic's number for their own system; yours will differ, and the budget is how you find out before the invoice does.</p>
+  <p><strong>The stop propagates.</strong> Article 14(4)(e) asks for "a 'stop' button or a similar procedure". For one agent that is the end of a loop. For a tree it is a cancel that reaches every task in flight, in every runtime, including the remote one through its task lifecycle, and it is tested, not assumed. The person who presses it is one person, and the tree tells them what was in flight. OWASP's "Overwhelming Human in the Loop" is the opposite failure: a tree that sends every commit to the root drowns the person the law relies on, and the design decision of which commits bubble up, and which are held at the branch by someone with the authority for that branch, is the oversight design for this row.</p>
+
+  <h2>The audit becomes a tree</h2>
+  <p>Part 5's record was a line per tool call. This row's record is a tree, and the first series described the data structure in its fifth part: each entry chained to the previous one, a root hash that lets anyone verify that an entry belongs and has not changed, and, because the toolkit's own tree "has no external witness", a witness outside the process that holds the roots. The root of the tree is the goal and the person who gave it. The nodes are the handovers: who delegated, to whom, with which scope, when, and what came back. The leaves are the tool calls, each with the caller, the tool, the arguments, the decision and the result.</p>
+  <p>Two things depend on that tree that nothing else can provide. The first is debugging. Anthropic's note is candid: "agents make dynamic decisions and are non-deterministic between runs, even with identical prompts. This makes debugging harder", and "adding full production tracing let us diagnose why agents failed and fix issues systematically". The second is the gate. You cannot test the whole by testing the parts, because the parts are chosen at run time. The gate for this row runs a set of goals and scores the tree: was the goal met, which handovers happened, did any child exceed its scope, did the stop work, what did it cost. It reruns on any change to any agent's model, prompt or tool list, and on any change to the orchestrator's prompt, which is this system's control law. OWASP's entry for the missing tree is "Repudiation &amp; Untraceability"; Article 12(1) is the law's name for its presence, and Article 73's report is written from it.</p>
+
+  <h2>What the platform owes them</h2>
+  <p>Everything from part 5, once per agent, and five things that exist only because there is more than one.</p>
+  <ul>
+    <li><strong>A runtime that knows what a handover is.</strong> Intent declared per agent, checked per action; delegation depth and scope narrowing as manifest rules; every delegation logged. The Agent Governance Toolkit, MIT, is the open reference the first series read, at release v4.1.0 of 9 June 2026 and tag v5.0.0 of 27 July 2026.</li>
+    <li><strong>An identity per agent.</strong> SPIRE, v1.15.3 of 21 August 2026, for workloads; the person's identity from Keycloak travelling down the tree with the task, so that a leaf can still say for whom.</li>
+    <li><strong>A boundary protocol, and the discipline to use it as a boundary.</strong> A2A for what crosses a runtime or an organisation, with the card verified, the task bounded, the lifecycle kept in your tree. The Model Context Protocol's current revision moved long-running tool calls into a "tasks" extension with "polling, mid-flight input, and durable handles"; a handle you can poll is a handle you can cancel, and cancellation is the property to test.</li>
+    <li><strong>A witness for the tree.</strong> The first series named the open building blocks for an external witness; whichever you choose, the roots leave the process that produced them.</li>
+    <li><strong>A budget and a stop at the root.</strong> Set by the person, divided by the orchestrator, enforced by the runtime; a cancel that fans out and is exercised in the gate.</li>
+    <li><strong>A gate that scores trees, and a rollout per agent.</strong> The blue/green gate from the last part of the first series applies to each agent's model, prompt and tool list as it applied to a model, with the whole tree as the thing under test.</li>
+  </ul>
+
+  <h2>Where the law reaches this row</h2>
+  <p><strong>One system, or several?</strong> Article 3(1) defines an AI system; it does not say how many models one contains. When several agents from several providers pursue one goal, the organisation that composes them chose the goal, the tools, the boundaries and the person, and Article 25(1) makes a deployer the provider when it substantially modifies a high-risk system or changes a system's purpose so that it becomes one. On that reading the composed tree is the system and its composer is its provider. As in part 5, counsel should confirm it before anyone relies on it.</p>
+  <p><strong>Article 14, for a tree.</strong> Paragraph 4(a) asks that the person can "understand the relevant capacities and limitations" and "detect anomalies". For one agent that is a log; for a tree it is the tree, shown to a person who can read it, not the last message of the orchestrator. Paragraph 4(e)'s stop must reach every branch. Article 26(2)'s "authority" must extend to the remote agent's task, which, across organisations, means the contract says so.</p>
+  <p><strong>Article 73, from the tree.</strong> A serious incident is reported within fifteen days, two for the widespread cases. Article 3(49) includes "a serious and irreversible disruption of the management or operation of critical infrastructure", which is written for the incident-response and plant jobs below, and "the infringement of obligations under Union law intended to protect fundamental rights", which is written for the onboarding one. The report names what happened, in which branch, under whose scope; that is the tree.</p>
+  <p><strong>Data protection, purpose by purpose.</strong> A child that receives a sub-goal receives data for it, and GDPR Article 5(1)(b) asks that data be "collected for specified, explicit and legitimate purposes and not further processed in a manner that is incompatible with those purposes". A tree that hands a citizen's file to three agents for three purposes has three purposes to justify, and across agencies a legal basis for each sharing. Article 22 and Article 21 FADP apply at the leaves that decide about a person without one.</p>
+  <p><strong>Security law, twice.</strong> NIS2 Article 21(2) names access control, supply-chain security and incident handling. In this row the remote agent is the supply chain, the tree is the access-control record, and an incident-response agent is itself part of incident handling and must not be the only one. The Swiss financial regulator asks that results can be "understood, explained or reproduced"; for an outcome produced by five agents, the tree is the only place that can be true. Annex III still says nothing about agents, and Article 50(1) still applies wherever a person talks to one.</p>
+
+  <h2>Three organisations, nine jobs</h2>
+  <p>The same three organisations. None of the nine is a new job: each is parts 2 to 5 composed. What is new in every row is the handover.</p>
+</div>
+
+<div class="wide"><div class="tblbox"><table class="jobs"><colgroup><col style="width:21%"><col style="width:10%"><col style="width:11%"><col style="width:27%"><col style="width:31%"></colgroup>
+    <thead><tr><th>Job</th><th>Family, level</th><th>Worst action</th><th>What the platform must provide</th><th>Regulatory line</th></tr></thead>
+    <tbody>
+      <tr><td>A public agency onboards a new resident end to end: registration, tax, benefits, across three agencies, with an orchestrator delegating to each agency's agent.</td><td>Agentic AI, 5</td><td>commit: a benefit granted, a tax record created</td><td>A2A between agencies with cards verified and each task bounded; each agency keeps its own gateway and hold; the resident's identity from the national scheme travels with the task; the tree kept by the orchestrating agency; one person there with the stop.</td><td>Annex III 5(a) for the benefits branch. Article 26(11). GDPR Article 5(1)(b): three purposes, a legal basis for each sharing. FADP Articles 7 and 8. Article 14: one person, the stop reaches all three.</td></tr>
+      <tr><td>The same agency's security team runs incident response with an orchestrator: it triages, delegates enrichment to read-only workers, and proposes containment; isolating a host is held for the analyst.</td><td>Agentic AI, 3 (reads at 4)</td><td>commit: a service isolated wrongly</td><td>Workers with no write tool; the containment tool labelled commit with a hold; a budget of time per incident; a stop; the tree kept as the incident record.</td><td>NIS2 Article 21(2): incident handling, and the agent is not the only handler. Article 3(49)(b) if the agency runs critical infrastructure. OWASP T5 cascading hallucination.</td></tr>
+      <tr><td>The same agency's procurement agent solicits quotes from suppliers' agents, compares them, and drafts the award for the buyer.</td><td>Agentic AI, 4 to solicit, 2 to award</td><td>commit: a request sent is a legally relevant message</td><td>Outgoing messages from a template, labelled commit; supplier agents authenticated by their cards; the tree kept in the procurement file; the award a proposal the buyer signs.</td><td>Public-procurement and contract law. Not Annex III. OWASP T9 identity spoofing, T16 protocol abuse.</td></tr>
+      <tr><td>A bank runs its accounting close with an orchestrator that delegates reconciliations (part 5's agent), accruals and intercompany matching to workers; the controller approves the close.</td><td>Agentic AI, 3</td><td>commit: a wrong posting in a closed period</td><td>Each worker narrowed to its ledgers; the close itself held; the tree is the close file; a budget per close; a stop.</td><td>Financial-reporting rules. FINMA: results "understood, explained or reproduced". Not Annex III. NIS2.</td></tr>
+      <tr><td>The same bank onboards a client end to end: identity, screening, product opening, card issuance, across its systems and a screening provider's agent.</td><td>Agentic AI, 4, the opening held</td><td>commit: an account opened for a sanctioned person</td><td>The screening branch has no write tool; the provider's agent through A2A, authenticated, task-bounded; the opening held for the officer; the tree kept with the file.</td><td>Anti-money-laundering rules. GDPR Article 22 if a refusal is automated with legal effect. NIS2 supply chain for the provider. Article 50(1).</td></tr>
+      <tr><td>The same bank responds to a fraud wave: part 2's model flags a pattern, an orchestrator delegates enrichment, blocks cards by rule up to a threshold, and escalates above it.</td><td>Agentic AI, 4</td><td>write at scale: cards blocked wrongly</td><td>The block tool labelled write, reversible, with a rate ceiling as a rule; the threshold as a rule; a stop that ends every branch; the tree.</td><td>Annex III 5(b) excludes fraud detection. Contract law for wrongly blocked clients. NIS2. OWASP T5.</td></tr>
+      <tr><td>A manufacturer handles a supply disruption: an orchestrator re-plans with part 2's solver, asks alternative suppliers' agents for availability, proposes a plan, and orders within a ceiling.</td><td>Agentic AI, 4</td><td>commit: orders placed</td><td>Supplier agents through A2A, authenticated; the ordering tool with a ceiling as a rule; the solver returns feasible plans; the tree kept with the plan.</td><td>Contract law. NIS2 Article 21(2) supply chain if in scope. Not Annex III. OWASP T16.</td></tr>
+      <tr><td>The same manufacturer runs order-to-cash end to end: intake, credit check with part 2's score, scheduling with part 5's agent, invoicing, dunning.</td><td>Agentic AI, 4</td><td>commit: a dunning letter to a good customer</td><td>Each worker narrowed to its system; the credit score handed to a rule at level 1; dunning held above a threshold; the tree per order.</td><td>Annex III 5(b) only if the customers are natural persons. Contract law. GDPR where they are.</td></tr>
+      <tr><td>The same manufacturer handles a plant fault: an orchestrator diagnoses from sensors (part 2), raises the ticket, orders the part and re-plans (part 5), and asks the shift lead before stopping a line.</td><td>Agentic AI, 4</td><td>commit: a line stopped</td><td>The line stop is a commit with a hold; the safety controller is on no agent's tool list; the tree kept with the ticket.</td><td>Machinery and product-safety rules: safety functions are not delegated to a model. Annex III point 2 if the plant is critical infrastructure and the agent were a safety component, which it must not be. NIS2.</td></tr>
+    </tbody>
+  </table></div></div>
+
+<div class="post">
+  <p>One of the nine is high-risk, and again it is the job, not the family. Most of the nine are better built as part 5 several times, with a process engine calling agents in an order a person wrote, and they should start there; the engine's records will say when a handover can be trusted to a model. What the platform column adds, in every row, is the same short list: a handover that narrows, an identity per agent, a budget that divides, a stop that fans out, and a tree.</p>
+
+  <h2>The map, read from the bottom</h2>
+  <p>Six parts, five regimes. In the first, the risk is the quality of a number, and the person or the rule that acts on it. In the second, a person reads, and the risk is the content. In the third, the risk is what the model was allowed to read, and how old it is. In the fourth, the risk is the action, and the perimeter around it. In this one, the risk is the handover, and the tree that records it. At each step the controls changed kind, not size, and at no step did the size of the model decide anything. A logistic regression wired to refuse applications sits higher on the map than a frontier model drafting emails, and the law reads the map, not the model.</p>
+  <p>The first series built a platform layer by layer and never said when you need one. This series has now assigned each layer to the row that needs it: the model gateway and the guardrails to the content row, the index with its access list to the sources row, the tool gateway with its policy and its hold to the action row, intent, identity per agent and the audit tree to this one. A job that sits in the first two rows needs none of the last three layers, and most jobs do.</p>
+  <p>For each job on your list, ask the two questions and then a third. Who decides. Who acts. And who can stop it. If the third has no name, the job is not ready for the row it was sold at.</p>
+
+  <div class="cta">
+    <strong>The series</strong>
+    <ol class="series">
+      <li><span><a href="../part-1/">Part 1</a></span>The map: who decides, who acts, and how far the system goes on its own.</li>
+      <li><span><a href="../part-2/">Part 2</a></span>AI without a language model: prediction, recommendation, perception, optimisation.</li>
+      <li><span><a href="../part-3/">Part 3</a></span>Generating and assisting: generative AI, integrated copilots, small specialised models.</li>
+      <li><span><a href="../part-4/">Part 4</a></span>Answering on your own documents: RAG, agentic RAG, graph RAG.</li>
+      <li><span><a href="../part-5/">Part 5</a></span>Acting within a perimeter: the AI agent with its tools, and the augmented workflow as the migration path.</li>
+      <li><span>Part 6</span>Pursuing a goal with several agents: agentic AI, delegation, intent. This part.</li>
+    </ol>
+  </div>
+
+  <div class="notice">This article is an engineer's reading of public legal texts and public code, checked against the versions and dates given below. It is not legal advice. For a real deployment, read the texts with counsel and with your supervisor's guidance for your sector.</div>
+
+  <div class="notice"><strong>Read, not run.</strong> Everything in this series comes from reading public documents and public code at a stated date, not from running them in production. Treat it as a map to test, not a result to trust: the texts are amended, the projects move monthly, and a placement that is right for one organisation's wiring is wrong for another's. Place your own jobs on the map with the people who own them. When something here does not match what you find, tell me, or better, tell the project or the authority concerned: that is the only way a map like this one stays true.</div>
+
+  <hr>
+  <div class="sources">
+    <strong>Sources</strong>
+    <ol>
+      <li><a href="https://www.anthropic.com/research/building-effective-agents">Building effective agents</a>, Anthropic, 19 December 2024, the "orchestrator-workers" pattern. <a href="https://www.anthropic.com/engineering/built-multi-agent-research-system">How we built our multi-agent research system</a>, Anthropic, 13 June 2025: the lead agent and subagents, the token figures, the sentence on minor failures, the sentence on coding tasks, and the passage on tracing. Read 24 September 2026.</li>
+      <li><a href="https://a2a-protocol.org/latest/specification/">Agent2Agent (A2A) protocol specification</a>, version 1.0.0 as published, definitions of Agent Card and Task and the sentence on internal state; <a href="https://github.com/a2aproject/A2A">a2aproject/A2A</a>, Apache-2.0, Linux Foundation, release v1.0.1 of 28 May 2026. Read 24 September 2026.</li>
+      <li><a href="https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/">Agentic AI: Threats and Mitigations</a>, OWASP Top 10 for LLM Applications &amp; Generative AI, Agentic Security Initiative. The resource page lists v1.0 of 17 February 2025; the PDF downloaded from it on 24 September 2026 is Version 1.1, December 2025, CC BY-SA 4.0, with seventeen threats, T1 to T17. Quoted: T3 Privilege Compromise, T5 Cascading Hallucination Attacks, T6 Intent Breaking &amp; Goal Manipulation, T8 Repudiation &amp; Untraceability, T9 Identity Spoofing &amp; Impersonation, T10 Overwhelming Human in the Loop, T13 Rogue Agents in Multi-Agent Systems, T16 Insecure Inter-Agent Protocol Abuse.</li>
+      <li><a href="https://github.com/microsoft/agent-governance-toolkit">Agent Governance Toolkit</a>, Microsoft, MIT: the intent, delegation and audit sections as read for part 4 of the first series (maximum delegation depth, scope narrowing, the sub-agent intent check, the audit tree without external witness); release v4.1.0 of 9 June 2026, tag v5.0.0 of 27 July 2026, checked 24 September 2026. <a href="https://github.com/spiffe/spire">SPIRE</a>, Apache-2.0, v1.15.3, 21 August 2026.</li>
+      <li><a href="https://modelcontextprotocol.io/specification/2026-07-28">Model Context Protocol specification</a>, revision 2026-07-28: the "Tasks" extension on the overview page and item 6 of the <a href="https://modelcontextprotocol.io/specification/2026-07-28/changelog">key changes</a>. Read 24 September 2026.</li>
+      <li>Regulation (EU) 2024/1689 (AI Act): <a href="https://artificialintelligenceact.eu/article/3/">Article 3</a>(1) and (49), <a href="https://artificialintelligenceact.eu/article/12/">Article 12</a>, <a href="https://artificialintelligenceact.eu/article/14/">Article 14</a>, <a href="https://artificialintelligenceact.eu/article/26/">Article 26</a>, <a href="https://artificialintelligenceact.eu/article/73/">Article 73</a>, read 24 September 2026; Article 25(1), Article 50(1), Annex III points 2 and 5, as read for the earlier parts. Regulation (EU) 2016/679 (GDPR), Articles 5(1)(b) and 22; FADP Articles 7, 8 and 21; Directive (EU) 2022/2555 (NIS2), Article 21(2); FINMA Guidance 08/2024. As read for the first series and parts 1 to 5, 22 to 24 September 2026.</li>
+      <li><a href="https://hokonoken.github.io/agent-stack-blueprint/">Agent stack blueprint</a>, the first series: part 4 for intent, delegation and the approval hold, part 5 for the audit tree and the witness, part 6 for the rollout gate.</li>
+    </ol>
+    <p>Independent work, not affiliated with any regulator, standards body, foundation or vendor named. Not legal advice. Product names belong to their owners. Views are my own and do not represent the position of my employer. Text and diagrams: <a href="../LICENSE.md">CC BY 4.0</a>; quoted code and documents stay under their own licences.</p>
+  </div>
+
+</div>
+
+</body>
+</html>
